@@ -38,6 +38,16 @@ const AdminCategories = () => {
     loadCategories();
   }, []);
 
+  const sanitizeImageUrl = (url: string) => {
+    if (!url) return "";
+    const driveRegex = /(?:d\/|id=|file\/d\/)([a-zA-Z0-9_-]{25,})/;
+    const match = url.match(driveRegex);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    return url;
+  };
+
   const handleSave = async () => {
     if (!editingCategory?.name || !editingCategory?.image) {
       toast({ title: "Error", description: "Missing name or image.", variant: "destructive" });
@@ -46,6 +56,11 @@ const AdminCategories = () => {
 
     setLoading(true);
     try {
+      const sanitizedCategory = {
+        ...editingCategory,
+        image: sanitizeImageUrl(editingCategory.image || "")
+      };
+
       const method = editingCategory._id ? "PUT" : "POST";
       const url = editingCategory._id 
         ? `${API_URL}/api/categories/${editingCategory._id}` 
@@ -57,7 +72,7 @@ const AdminCategories = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
-        body: JSON.stringify(editingCategory),
+        body: JSON.stringify(sanitizedCategory),
       });
 
       const data = await res.json();
@@ -148,10 +163,14 @@ const AdminCategories = () => {
                 />
               </div>
 
-              <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Category Image</label>
-                <div className="grid grid-cols-[1fr_2fr] gap-4">
-                  <label className="aspect-square bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#be1e2d] transition-all overflow-hidden relative">
+              <div className="space-y-4 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                <div className="flex items-center justify-between px-1">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Media Manager</label>
+                  {loading && <span className="text-[10px] font-black text-[#be1e2d] animate-pulse">PROCESSING...</span>}
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="aspect-square bg-white rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#be1e2d] transition-all overflow-hidden relative group">
                     <input 
                       type="file" 
                       className="hidden" 
@@ -176,18 +195,29 @@ const AdminCategories = () => {
                       }} 
                     />
                     {editingCategory?.image ? (
-                        <img src={editingCategory.image} className="w-full h-full object-contain p-2 bg-white" alt="Preview" />
+                        <>
+                          <img src={editingCategory.image} className="w-full h-full object-contain p-2" alt="Preview" />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded uppercase tracking-widest">Change</span>
+                          </div>
+                        </>
                     ) : (
                         <div className="flex flex-col items-center text-slate-300">
                            <Upload className="w-6 h-6 mb-1" />
-                           <span className="text-[8px] font-black uppercase tracking-widest">Upload</span>
+                           <span className="text-[8px] font-black uppercase tracking-widest">Upload Photo</span>
                         </div>
                     )}
                   </label>
-                  <div className="flex flex-col justify-center">
-                     <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
-                        Upload a transparent PNG for the best professional look on your Home page.
-                     </p>
+                  
+                  <div className="space-y-2 flex flex-col justify-center">
+                    <label className="text-[9px] font-bold text-slate-400 ml-1">OR PASTE IMAGE URL</label>
+                    <input 
+                      value={editingCategory?.image || ""} 
+                      onChange={e => setEditingCategory(p => ({ ...p, image: e.target.value }))}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[10px] font-mono focus:ring-2 ring-red-100 outline-none transition-all"
+                      placeholder="https://drive.google.com/..."
+                    />
+                    <p className="text-[8px] text-slate-400 italic px-1">Supports Google Drive direct links.</p>
                   </div>
                 </div>
               </div>

@@ -2,7 +2,6 @@ const express = require("express");
 const multer = require("multer");
 const sharp = require("sharp");
 const path = require("path");
-const fs = require("fs");
 const { protect, admin } = require("../middleware/auth");
 
 const router = express.Router();
@@ -11,7 +10,7 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit for raw uploads
   fileFilter: (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|webp/;
     const mimetype = filetypes.test(file.mimetype);
@@ -30,24 +29,23 @@ router.post("/", protect, admin, upload.single("image"), async (req, res) => {
   }
 
   try {
-    const filename = `product-${Date.now()}.webp`;
-    const outputPath = path.join(__dirname, "..", "uploads", filename);
-
-    // Process image with Sharp: Resize, convert to WebP, and compress
-    await sharp(req.file.buffer)
-      .resize(1000, 1000, {
+    // Aggressively process image with Sharp
+    // Resize to max 800px and convert to WebP with 50% quality
+    const buffer = await sharp(req.file.buffer)
+      .resize(800, 800, {
         fit: "inside",
         withoutEnlargement: true,
       })
-      .webp({ quality: 75 })
-      .toFile(outputPath);
+      .webp({ quality: 40 })
+      .toBuffer();
 
-    // Return the URL for the frontend
-    const imageUrl = `/uploads/${filename}`;
+    // Convert to Base64 Data URI
+    const base64Image = `data:image/webp;base64,${buffer.toString("base64")}`;
+
     res.json({
       success: true,
-      url: imageUrl,
-      message: "Image uploaded and compressed successfully"
+      url: base64Image,
+      message: "Image compressed and converted to Base64 successfully"
     });
   } catch (error) {
     console.error("Upload error:", error);
