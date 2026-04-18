@@ -13,7 +13,7 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  if (user && isAdmin) return <Navigate to="/admin/orders" replace />;
+    if (user && isAdmin) return <Navigate to="/admin/dashboard" replace />;
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ const AdminLogin = () => {
       <div className="container py-14">
         <div className="max-w-md mx-auto border border-border rounded-xl p-6">
           <h1 className="font-display text-2xl font-bold mb-1">Admin Login</h1>
-          <p className="text-sm text-muted-foreground mb-5">Login with an account that has role=admin in Supabase metadata.</p>
+          <p className="text-sm text-muted-foreground mb-5">Login with your administrator credentials.</p>
           <form onSubmit={onSubmit} className="space-y-3">
             <input value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-border rounded-lg px-3 py-2" placeholder="Admin email" />
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-border rounded-lg px-3 py-2" placeholder="Password" />

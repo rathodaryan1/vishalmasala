@@ -1,23 +1,49 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Heart, ShoppingCart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import { getProductById, getRelatedProducts } from "@/data/products";
 import { useShop } from "@/context/ShopContext";
 import { useToast } from "@/hooks/use-toast";
+import type { Product } from "@/lib/products";
 
 const ProductDetail = () => {
   const { productId } = useParams();
-  const product = productId ? getProductById(productId) : undefined;
+  const { products, addToCart, toggleWishlist, isWishlisted, loadingProducts } = useShop();
+  const [product, setProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const { addToCart, toggleWishlist, isWishlisted } = useShop();
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (productId && products.length > 0) {
+      const found = products.find((p) => p.id === productId);
+      if (found) {
+        setProduct(found);
+      }
+    }
+  }, [productId, products]);
+
   const variant = product?.variants[selectedVariant];
-  const related = useMemo(() => (productId ? getRelatedProducts(productId) : []), [productId]);
+  const related = useMemo(() => {
+    if (!product) return [];
+    return products
+      .filter((item) => item.id !== product.id && item.category === product.category)
+      .slice(0, 4);
+  }, [product, products]);
+
+  if (loadingProducts) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center font-display text-2xl text-muted-foreground">
+          Loading product...
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product || !variant) return <Navigate to="/products" replace />;
 

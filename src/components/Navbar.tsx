@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { Heart, Menu, Search, ShoppingCart, User, X, LayoutDashboard } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useShop } from "@/context/ShopContext";
 import { useAuth } from "@/context/AuthContext";
@@ -11,7 +11,7 @@ const navLinks = [
   { label: "Products", href: "/products" },
   { label: "Offers", href: "/offers" },
   { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Navbar = () => {
@@ -69,6 +69,11 @@ const Navbar = () => {
               {cartCount}
             </span>
           </Link>
+          {user?.role === "admin" && (
+            <Link to="/admin/dashboard" className="hidden lg:flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground font-bold text-xs uppercase tracking-widest rounded-full hover:scale-105 transition-all shadow-md">
+              <LayoutDashboard className="w-4 h-4" /> Admin Portal
+            </Link>
+          )}
           <button
             className="md:hidden p-2 text-foreground"
             onClick={() => setMobileOpen(!mobileOpen)}

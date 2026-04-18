@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Grid2X2, Grid3X3, List, ChevronDown } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import { products, categories } from "@/data/products";
+import { useShop } from "@/context/ShopContext";
 
 const sortOptions = ["Featured", "Price: Low to High", "Price: High to Low", "Newest"];
+const categories = ["All", "Basic Spices", "Blended Spices", "Pure Spices", "Asafoetida", "Exotic Range"];
 
 const Products = () => {
+  const { products, loadingProducts } = useShop();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q")?.toLowerCase().trim() ?? "";
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -44,118 +46,123 @@ const Products = () => {
       : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#f8fafc]">
       <Navbar />
 
-      {/* Category Header */}
-      <div className="bg-muted border-b border-border">
-        <div className="container py-10 md:py-14 text-center">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-primary mb-2">
-            {selectedCategory === "All" ? "All Products" : selectedCategory}
-          </h1>
-          <p className="font-display text-lg font-semibold text-foreground mb-3">
-            Savour the love, delight your senses!
-          </p>
-          <p className="font-body text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Delight your senses with Vishal Masala's finest spices, where each blend is made with care. Savour the love in every bite and enjoy the promise of flavour, quality, and authenticity.
-          </p>
-          {searchQuery && (
-            <p className="mt-3 text-sm text-primary font-semibold">Search result for: "{searchQuery}"</p>
-          )}
-        </div>
-      </div>
+      <div className="container py-6">
+        {/* Breadcrumbs */}
+        <nav className="flex text-xs font-medium text-slate-500 mb-6 px-1">
+          <Link to="/" className="hover:text-primary transition-colors font-bold uppercase tracking-widest">Home</Link>
+          <span className="mx-2">/</span>
+          <span className="text-slate-900 font-bold uppercase tracking-widest">{selectedCategory}</span>
+        </nav>
 
-      {/* Category Tabs */}
-      <div className="border-b border-border bg-background sticky top-16 md:top-20 z-40">
-        <div className="container overflow-x-auto">
-          <div className="flex gap-1 py-3">
+        {/* Category Header Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-10">
+          <div className="container py-12 md:py-16 text-center max-w-5xl">
+            <h1 className="font-display text-5xl md:text-6xl font-bold text-[#be1e2d] mb-4">
+              {selectedCategory === "All" ? "Our Collection" : selectedCategory}
+            </h1>
+            <p className="font-display text-2xl font-bold text-slate-800 mb-6">
+              Savour the love, delight your senses!
+            </p>
+            <div className="w-16 h-1 bg-[#be1e2d] mx-auto mb-8"></div>
+            <p className="font-body text-base text-slate-600 leading-relaxed max-w-4xl mx-auto px-4">
+              Delight your senses with Vishal Masala's finest spices, where each blend is made with care. 
+              Savour the love in every bite and enjoy the promise of flavour, quality, and authenticity. 
+              The {selectedCategory.toLowerCase()} spices that we provide especially for Indian kitchens include 
+              Turmeric Powder, Red Chilli Powder, Garam Masala, Coriander Powder, Cumin Powder, and more, 
+              crafted to bring heritage and taste to your daily cooking.
+            </p>
+            {searchQuery && (
+              <p className="mt-6 text-sm text-[#be1e2d] font-bold tracking-wide uppercase px-4 py-2 bg-[#be1e2d]/5 rounded-full inline-block animate-in fade-in zoom-in">
+                Search results for: "{searchQuery}"
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Unified Category Tabs & Toolbar */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-3 mb-8 flex flex-wrap items-center justify-between gap-4 sticky top-20 z-40">
+           <div className="flex gap-1 overflow-x-auto no-scrollbar max-w-full">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full font-body text-sm font-medium transition-colors ${
+                className={`whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${
                   selectedCategory === cat
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    ? "bg-[#be1e2d] text-white shadow-md shadow-red-200"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
                 {cat}
               </button>
             ))}
           </div>
-        </div>
-      </div>
+          
+          <div className="flex items-center gap-6 px-4 border-l border-slate-100">
+             <div className="flex items-center gap-1.5 border-r border-slate-100 pr-4 mr-2 hidden lg:flex">
+                <button onClick={() => setGridCols(2)} className={`p-2 rounded-lg transition-colors ${gridCols === 2 ? "bg-slate-100 text-[#be1e2d]" : "text-slate-400 hover:text-slate-600"}`}><Grid2X2 className="w-4 h-4" /></button>
+                <button onClick={() => setGridCols(3)} className={`p-2 rounded-lg transition-colors ${gridCols === 3 ? "bg-slate-100 text-[#be1e2d]" : "text-slate-400 hover:text-slate-600"}`}><Grid3X3 className="w-4 h-4" /></button>
+                <button onClick={() => setGridCols(4)} className={`p-2 rounded-lg transition-colors ${gridCols === 4 ? "bg-slate-100 text-[#be1e2d]" : "text-slate-400 hover:text-slate-600"}`}><List className="w-4 h-4" /></button>
+             </div>
 
-      {/* Toolbar */}
-      <div className="container">
-        <div className="flex items-center justify-between py-4 border-b border-border">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setGridCols(2)}
-              className={`p-1.5 rounded ${gridCols === 2 ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <Grid2X2 className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setGridCols(3)}
-              className={`p-1.5 rounded ${gridCols === 3 ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <Grid3X3 className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setGridCols(4)}
-              className={`p-1.5 rounded ${gridCols === 4 ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <List className="w-5 h-5" />
-            </button>
-            <span className="text-muted-foreground font-body text-sm ml-2">
-              {sorted.length} products
-            </span>
+             <div className="relative">
+                <button
+                  onClick={() => setShowSort(!showSort)}
+                  className="flex items-center gap-2 font-black text-[10px] uppercase tracking-widest text-slate-700 hover:text-[#be1e2d] transition-colors"
+                >
+                  Sort by: <span className="text-[#be1e2d]">{sortBy}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${showSort ? 'rotate-180' : ''}`} />
+                </button>
+                {showSort && (
+                  <div className="absolute right-0 top-full mt-3 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 min-w-[220px] p-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                    {sortOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => { setSortBy(opt); setShowSort(false); }}
+                        className={`block w-full text-left px-4 py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest transition-colors ${
+                          sortBy === opt ? "bg-[#be1e2d] text-white shadow-md" : "text-slate-600 hover:bg-slate-50"
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+             </div>
           </div>
+        </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setShowSort(!showSort)}
-              className="flex items-center gap-2 font-body text-sm text-foreground border border-border rounded-lg px-3 py-2 hover:border-primary transition-colors"
-            >
-              Sort by: <span className="font-semibold">{sortBy}</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-            {showSort && (
-              <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg z-50 min-w-[180px]">
-                {sortOptions.map((opt) => (
-                  <button
-                    key={opt}
-                    onClick={() => { setSortBy(opt); setShowSort(false); }}
-                    className={`block w-full text-left px-4 py-2.5 font-body text-sm hover:bg-accent transition-colors ${
-                      sortBy === opt ? "text-primary font-semibold" : "text-foreground"
-                    }`}
-                  >
-                    {opt}
-                  </button>
+        {/* Product Grid Area */}
+        <div className="py-2">
+          {loadingProducts ? (
+            <div className="text-center py-32">
+              <div className="w-12 h-12 border-4 border-[#be1e2d] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="font-display text-xl text-slate-400 animate-pulse font-bold">Summoning your spices...</p>
+            </div>
+          ) : (
+            <>
+              <div className={`grid ${gridClass} gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700`}>
+                {sorted.map((product) => (
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* Product Grid */}
-      <div className="container py-8">
-        <div className={`grid ${gridClass} gap-5`}>
-          {sorted.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+              {sorted.length === 0 && (
+                <div className="text-center py-32 bg-white border border-slate-200 rounded-3xl animate-in zoom-in duration-500">
+                  <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <List className="w-8 h-8 text-slate-300" />
+                  </div>
+                  <p className="font-display text-3xl text-slate-800 font-bold mb-3">No products found</p>
+                  <p className="font-body text-slate-500 max-w-sm mx-auto font-medium">
+                    We couldn't find any spices in this category. Try adjusting your filters or search terms.
+                  </p>
+                </div>
+              )}
+            </>
+          )}
         </div>
-
-        {sorted.length === 0 && (
-          <div className="text-center py-20">
-            <p className="font-display text-2xl text-muted-foreground">No products found</p>
-            <p className="font-body text-sm text-muted-foreground mt-2">
-              Try selecting a different category.
-            </p>
-          </div>
-        )}
       </div>
 
       <Footer />

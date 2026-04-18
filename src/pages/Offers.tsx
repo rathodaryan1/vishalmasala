@@ -1,10 +1,15 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
+import { useShop } from "@/context/ShopContext";
 
 const Offers = () => {
-  const offerProducts = products.filter((product) => product.isOffer);
+  const { products, loadingProducts } = useShop();
+  
+  // Dynamic filter: Show products with any variant having a discount or marked as offer
+  const offerProducts = products.filter((product) => {
+    return product.isOffer || product.variants.some(v => v.originalPrice > v.price);
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -16,11 +21,17 @@ const Offers = () => {
         </div>
       </div>
       <div className="container py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {offerProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {loadingProducts ? (
+          <div className="text-center py-20 font-display text-2xl text-muted-foreground">
+            Loading offers...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {offerProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
       <Footer />
     </div>

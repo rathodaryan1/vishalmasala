@@ -1,5 +1,6 @@
-import { hasSupabaseConfig, supabase } from "@/lib/supabase";
 import type { CartItem } from "@/context/ShopContext";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
@@ -24,79 +25,129 @@ export interface OrderRecord extends CheckoutPayload {
   created_at: string;
 }
 
-const tableName = "orders";
+const getAuthHeaders = () => {
+  const savedUser = localStorage.getItem("vishal_user");
+  if (savedUser) {
+    const user = JSON.parse(savedUser);
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user.token}`,
+    };
+  }
+  return { "Content-Type": "application/json" };
+};
 
 export const createOrder = async (payload: CheckoutPayload) => {
-  if (!supabase || !hasSupabaseConfig) {
-    return { error: "Supabase is not configured. Unable to save order.", data: null };
+  try {
+    const res = await fetch(`${API_URL}/api/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...payload,
+        orderItems: (payload.cart_items as any).map((item: any) => ({
+          product: item.productId,
+          quantity: item.quantity,
+          variant: {
+            weight: item.variantWeight,
+            price: item.price,
+          },
+        })),
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) return { error: data.message || "Failed to create order", data: null };
+
+    return { 
+      data: {
+        ...payload,
+        id: data._id,
+        payment_status: data.payment_status,
+        status: data.status,
+        created_at: data.createdAt
+      } as OrderRecord, 
+      error: null 
+    };
+  } catch (err: any) {
+    return { error: err.message || "Server connection error", data: null };
   }
-
-  const primaryInsert = await supabase
-    .from(tableName)
-    .insert([{ ...payload, payment_status: "paid", status: "pending" }])
-    .select()
-    .single();
-
-  if (!primaryInsert.error) {
-    return { data: primaryInsert.data as OrderRecord | null, error: null };
-  }
-
-  // Backward-compatible retry for schemas that use address_line_1/address_line_2
-  // instead of a single "address" column.
-  if (primaryInsert.error.message.toLowerCase().includes("address")) {
-    const retryInsert = await supabase
-      .from(tableName)
-      .insert([
-        {
-          user_id: payload.user_id ?? null,
-          customer_name: payload.customer_name,
-          customer_email: payload.customer_email,
-          customer_phone: payload.customer_phone,
-          address_line_1: payload.address,
-          address_line_2: "",
-          city: payload.city,
-          state: payload.state,
-          pincode: payload.pincode,
-          cart_items: payload.cart_items,
-          total_amount: payload.total_amount,
-          payment_id: payload.payment_id,
-          payment_status: "paid",
-          status: "pending",
-        },
-      ])
-      .select()
-      .single();
-
-    return { data: retryInsert.data as OrderRecord | null, error: retryInsert.error?.message ?? null };
-  }
-
-  return { data: null, error: primaryInsert.error.message };
 };
 
 export const listOrders = async () => {
-  if (!supabase || !hasSupabaseConfig) {
-    return { error: "Supabase is not configured.", data: [] as OrderRecord[] };
+  try {
+    const res = await fetch(`${API_URL}/api/orders`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) return { error: data.message || "Failed to fetch orders", data: [] as OrderRecord[] };
+
+    const formattedOrders = data.map((order: any) => ({
+      id: order._id,
+      customer_name: order.customer_name,
+      customer_email: order.customer_email,
+      customer_phone: order.customer_phone,
+      address: order.address,
+      city: order.city,
+      state: order.state,
+      pincode: order.pincode,
+      cart_items: order.cart_items,
+      total_amount: order.total_amount,
+      payment_id: order.payment_id,
+      payment_status: order.payment_status,
+      status: order.status,
+      created_at: order.createdAt,
+    }));
+
+    return { data: formattedOrders as OrderRecord[], error: null };
+  } catch (err: any) {
+    return { error: err.message || "Server connection error", data: [] as OrderRecord[] };
   }
-  const { data, error } = await supabase.from(tableName).select("*").order("created_at", { ascending: false });
-  return { data: (data ?? []) as OrderRecord[], error: error?.message ?? null };
 };
 
 export const listOrdersByEmail = async (email: string) => {
-  if (!supabase || !hasSupabaseConfig) {
-    return { error: "Supabase is not configured.", data: [] as OrderRecord[] };
+  try {
+    const res = await fetch(`${API_URL}/api/orders/myorders`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) return { error: data.message || "Failed to fetch orders", data: [] as OrderRecord[] };
+
+    const formattedOrders = data.map((order: any) => ({
+      id: order._id,
+      customer_name: order.customer_name,
+      customer_email: order.customer_email,
+      customer_phone: order.customer_phone,
+      address: order.address,
+      city: order.city,
+      state: order.state,
+      pincode: order.pincode,
+      cart_items: order.cart_items,
+      total_amount: order.total_amount,
+      payment_id: order.payment_id,
+      payment_status: order.payment_status,
+      status: order.status,
+      created_at: order.createdAt,
+    }));
+
+    return { data: formattedOrders as OrderRecord[], error: null };
+  } catch (err: any) {
+    return { error: err.message || "Server connection error", data: [] as OrderRecord[] };
   }
-  const { data, error } = await supabase
-    .from(tableName)
-    .select("*")
-    .eq("customer_email", email)
-    .order("created_at", { ascending: false });
-  return { data: (data ?? []) as OrderRecord[], error: error?.message ?? null };
 };
 
 export const updateOrderStatus = async (id: string, status: OrderStatus) => {
-  if (!supabase || !hasSupabaseConfig) {
-    return { error: "Supabase is not configured." };
+  try {
+    const res = await fetch(`${API_URL}/api/orders/${id}/status`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ status }),
+    });
+    const data = await res.json();
+    if (!res.ok) return { error: data.message || "Failed to update status" };
+
+    return { error: null };
+  } catch (err: any) {
+    return { error: err.message || "Server connection error" };
   }
-  const { error } = await supabase.from(tableName).update({ status }).eq("id", id);
-  return { error: error?.message ?? null };
 };

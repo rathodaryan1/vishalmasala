@@ -13,10 +13,19 @@ import Checkout from "./pages/Checkout.tsx";
 import About from "./pages/About.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminOrders from "./pages/AdminOrders.tsx";
+import AdminProducts from "./pages/AdminProducts.tsx";
+import AdminCategories from "./pages/AdminCategories.tsx";
+import AdminBlogs from "./pages/AdminBlogs.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
 import Login from "./pages/Login.tsx";
 import Account from "./pages/Account.tsx";
 import Offers from "./pages/Offers.tsx";
 import Blog from "./pages/Blog.tsx";
+import BlogDetail from "./pages/BlogDetail.tsx";
+import Contact from "./pages/Contact.tsx";
+import WhatsAppButton from "./components/WhatsAppButton.tsx";
+import BottomNav from "./components/BottomNav.tsx";
+import BackToTop from "./components/BackToTop.tsx";
 import { ShopProvider } from "./context/ShopContext.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
@@ -32,6 +41,9 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <WhatsAppButton />
+            <BottomNav />
+            <BackToTop />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/products" element={<Products />} />
@@ -49,6 +61,8 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/offers" element={<Offers />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogDetail />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route
                 path="/account"
@@ -64,6 +78,38 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <AdminOrders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <ProtectedRoute>
+                    <AdminProducts />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/categories"
+                element={
+                  <ProtectedRoute>
+                    <AdminCategories />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/blogs"
+                element={
+                  <ProtectedRoute>
+                    <AdminBlogs />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
                   </ProtectedRoute>
                 }
               />

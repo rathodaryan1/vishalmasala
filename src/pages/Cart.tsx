@@ -6,8 +6,20 @@ import { calculateCartTotals } from "@/lib/cart";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { cartItems, updateCartQuantity, removeFromCart } = useShop();
-  const { resolved, subtotal, discount, total } = calculateCartTotals(cartItems);
+  const { cartItems, updateCartQuantity, removeFromCart, products, loadingProducts } = useShop();
+  const { resolved, subtotal, discount, total } = calculateCartTotals(cartItems, products);
+
+  if (loadingProducts) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container py-10 text-center font-display text-2xl text-muted-foreground">
+          Loading cart...
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

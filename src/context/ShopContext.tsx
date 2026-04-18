@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { products } from "@/data/products";
+import { listProducts, type Product } from "@/lib/products";
 
 export interface CartItem {
   productId: string;
@@ -10,6 +10,8 @@ export interface CartItem {
 interface ShopContextValue {
   cartItems: CartItem[];
   wishlist: string[];
+  products: Product[];
+  loadingProducts: boolean;
   addToCart: (productId: string, variantWeight: string, quantity?: number) => void;
   updateCartQuantity: (productId: string, variantWeight: string, quantity: number) => void;
   removeFromCart: (productId: string, variantWeight: string) => void;
@@ -17,6 +19,7 @@ interface ShopContextValue {
   toggleWishlist: (productId: string) => void;
   isWishlisted: (productId: string) => boolean;
   cartCount: number;
+  refreshProducts: () => Promise<void>;
 }
 
 const CART_KEY = "spiceking_cart";
@@ -37,6 +40,19 @@ const readStorage = <T,>(key: string, fallback: T): T => {
 export const ShopProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>(() => readStorage(CART_KEY, []));
   const [wishlist, setWishlist] = useState<string[]>(() => readStorage(WISHLIST_KEY, []));
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  const refreshProducts = async () => {
+    setLoadingProducts(true);
+    const { data } = await listProducts();
+    setProducts(data);
+    setLoadingProducts(false);
+  };
+
+  useEffect(() => {
+    refreshProducts();
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
@@ -47,7 +63,6 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
   }, [wishlist]);
 
   const addToCart = (productId: string, variantWeight: string, quantity = 1) => {
-    if (!products.some((p) => p.id === productId)) return;
     setCartItems((prev) => {
       const index = prev.findIndex(
         (item) => item.productId === productId && item.variantWeight === variantWeight
@@ -99,6 +114,8 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     cartItems,
     wishlist,
+    products,
+    loadingProducts,
     addToCart,
     updateCartQuantity,
     removeFromCart,
@@ -106,6 +123,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     toggleWishlist,
     isWishlisted,
     cartCount,
+    refreshProducts,
   };
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;

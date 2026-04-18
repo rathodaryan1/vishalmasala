@@ -1,70 +1,99 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { hasSupabaseConfig, supabase } from "@/lib/supabase";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "user" | "admin";
+  token?: string;
+  phone?: string;
+  address?: {
+    line1?: string;
+    line2?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    country?: string;
+  };
+  user_metadata?: Record<string, any>; // For backward compatibility
+}
 
 interface AuthContextValue {
-  user: User | null;
-  session: Session | null;
+  user: AuthUser | null;
   loading: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<{ error: string | null }>;
-  signup: (
-    payload: {
-      email: string;
-      password: string;
-      first_name: string;
-      last_name: string;
-      mobile: string;
-    }
-  ) => Promise<{ error: string | null }>;
+  signup: (payload: {
+    email: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+    mobile: string;
+  }) => Promise<{ error: string | null }>;
   updateProfileMetadata: (payload: Record<string, string>) => Promise<{ error: string | null }>;
-  logout: () => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const isUserAdmin = (user: User | null) => {
-  const roleInMetadata = user?.user_metadata?.role ?? user?.app_metadata?.role;
-  return roleInMetadata === "admin";
-};
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let mounted = true;
-    if (!supabase) {
-      setLoading(false);
-      return;
+  const formatUser = (data: any): AuthUser => ({
+    id: data._id,
+    name: data.name,
+    email: data.email,
+    role: data.role,
+    token: data.token,
+    phone: data.phone,
+    address: data.address,
+    user_metadata: {
+      first_name: data.name.split(" ")[0],
+      last_name: data.name.split(" ").slice(1).join(" "),
+      mobile: data.phone,
+      address_line_1: data.address?.line1,
+      address_line_2: data.address?.line2,
+      city: data.address?.city,
+      state: data.address?.state,
+      pincode: data.address?.pincode,
+      country: data.address?.country,
+      role: data.role
     }
+  });
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (!mounted) return;
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    });
-
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-      setUser(nextSession?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => {
-      mounted = false;
-      data.subscription.unsubscribe();
-    };
+  useEffect(() => {
+    const savedUser = localStorage.getItem("vishal_user");
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+      } catch (e) {
+        localStorage.removeItem("vishal_user");
+      }
+    }
+    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    if (!supabase || !hasSupabaseConfig) {
-      return { error: "Supabase is not configured. Add env variables first." };
+    try {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { error: data.message || "Login failed" };
+
+      const authUser = formatUser(data);
+      setUser(authUser);
+      localStorage.setItem("vishal_user", JSON.stringify(authUser));
+      return { error: null };
+    } catch (err: any) {
+      return { error: err.message || "Server connection error" };
     }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
   };
 
   const signup = async ({
@@ -80,49 +109,76 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     last_name: string;
     mobile: string;
   }) => {
-    if (!supabase || !hasSupabaseConfig) {
-      return { error: "Supabase is not configured. Add env variables first." };
+    try {
+      const name = `${first_name} ${last_name}`.trim();
+      const res = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { error: data.message || "Signup failed" };
+
+      const authUser = formatUser(data);
+      setUser(authUser);
+      localStorage.setItem("vishal_user", JSON.stringify(authUser));
+      return { error: null };
+    } catch (err: any) {
+      return { error: err.message || "Server connection error" };
     }
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          first_name,
-          last_name,
-          mobile,
-          full_name: `${first_name} ${last_name}`.trim(),
-        },
-      },
-    });
-    return { error: error?.message ?? null };
   };
 
   const updateProfileMetadata = async (payload: Record<string, string>) => {
-    if (!supabase || !hasSupabaseConfig) {
-      return { error: "Supabase is not configured. Add env variables first." };
+    try {
+      if (!user?.token) return { error: "Not authenticated" };
+
+      const res = await fetch(`${API_URL}/api/auth/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          name: `${payload.first_name || ""} ${payload.last_name || ""}`.trim(),
+          phone: payload.mobile,
+          address: {
+            line1: payload.address_line_1,
+            line2: payload.address_line_2,
+            city: payload.city,
+            state: payload.state,
+            pincode: payload.pincode,
+            country: payload.country,
+          }
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { error: data.message || "Profile update failed" };
+
+      const authUser = formatUser(data);
+      setUser(authUser);
+      localStorage.setItem("vishal_user", JSON.stringify(authUser));
+      return { error: null };
+    } catch (err: any) {
+      return { error: err.message || "Server connection error" };
     }
-    const { error } = await supabase.auth.updateUser({ data: payload });
-    return { error: error?.message ?? null };
   };
 
-  const logout = async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("vishal_user");
   };
 
   const value = useMemo(
     () => ({
       user,
-      session,
       loading,
-      isAdmin: isUserAdmin(user),
+      isAdmin: user?.role === "admin",
       login,
       signup,
       updateProfileMetadata,
       logout,
     }),
-    [user, session, loading]
+    [user, loading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
