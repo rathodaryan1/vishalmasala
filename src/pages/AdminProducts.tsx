@@ -16,7 +16,7 @@ const AdminProducts = () => {
   const [editingProduct, setEditingProduct] = useState<Partial<Product> | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL = import.meta.env.VITE_API_URL || "";
 
   const loadCategories = async () => {
     try {

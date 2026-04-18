@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { User, Phone, MapPin, Mail, CreditCard, ChevronRight } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = "";
 
 interface CheckoutForm {
   first_name: string;
