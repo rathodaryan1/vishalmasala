@@ -25,17 +25,32 @@ const ProductDetail = () => {
   const [showZoom, setShowZoom] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
+  const [isInitializing, setIsInitializing] = useState(true);
+
   useEffect(() => {
-    if (productId && products.length > 0) {
-      const found = products.find((p) => p.id === productId);
+    const init = async () => {
+      if (!productId) return;
+      
+      // First try to find in existing products
+      let found = products.find((p) => p.id === productId);
+      
       if (found) {
         setProduct(found);
         setActiveImage(found.image);
+        setIsInitializing(false);
+      } else if (!loadingProducts) {
+        // If not found and not loading, try fetching specifically
+        const { data, error } = await fetchProductById(productId);
+        if (data) {
+          setProduct(data);
+          setActiveImage(data.image);
+        }
+        setIsInitializing(false);
       }
-    }
-  }, [productId, products]);
+    };
+    init();
+  }, [productId, products, loadingProducts]);
 
-  const variant = product?.variants[selectedVariant];
   const allImages = useMemo(() => {
     if (!product) return [];
     return [product.image, ...(product.images || [])].filter(Boolean);
@@ -57,8 +72,18 @@ const ProductDetail = () => {
     const y = (py / height) * 100;
     setZoomPos({ x, y, px, py });
   };
+  
+  const variant = product?.variants[selectedVariant];
+  
+  if (loadingProducts || isInitializing) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#be1e2d] border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="font-display text-xl text-slate-400 font-bold animate-pulse">Loading Product...</p>
+      </div>
+    );
+  }
 
-  if (loadingProducts) return <div className="min-h-screen bg-white" />;
   if (!product || !variant) return <Navigate to="/products" replace />;
 
   const discountPercent = Math.round(((variant.originalPrice - variant.price) / variant.originalPrice) * 100);
