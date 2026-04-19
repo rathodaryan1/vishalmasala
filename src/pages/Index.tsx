@@ -10,6 +10,7 @@ import { useShop } from "@/context/ShopContext";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { listBlogs, type BlogPost } from "@/lib/blogs";
+import { getImageUrl } from "@/lib/utils";
 
 const Index = () => {
   const { products } = useShop();
@@ -133,7 +134,7 @@ const Index = () => {
                 className="group flex flex-col"
               >
                 <div className="relative aspect-video overflow-hidden rounded-[2rem] mb-6 shadow-lg group-hover:shadow-2xl transition-all duration-500">
-                  <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src={getImageUrl(blog.image)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-[#be1e2d]">
                     {blog.date}
                   </div>

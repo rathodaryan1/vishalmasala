@@ -38,6 +38,12 @@ const AdminCategories = () => {
     loadCategories();
   }, []);
 
+  const getImageUrl = (url: string) => {
+    if (!url) return "";
+    if (url.startsWith("data:") || url.startsWith("http")) return url;
+    return `${API_URL}${url}`;
+  };
+
   const sanitizeImageUrl = (url: string) => {
     if (!url) return "";
     const driveRegex = /(?:d\/|id=|file\/d\/)([a-zA-Z0-9_-]{25,})/;
@@ -131,7 +137,7 @@ const AdminCategories = () => {
             {categories.map((cat) => (
               <div key={cat._id} className="bg-white border-2 border-slate-50 rounded-[2.5rem] p-6 hover:shadow-2xl transition-all group">
                 <div className="aspect-square rounded-2xl bg-slate-50 mb-6 overflow-hidden relative">
-                   <img src={cat.image} className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" alt={cat.name} />
+                   <img src={getImageUrl(cat.image)} className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" alt={cat.name} />
                 </div>
                 <h3 className="font-display text-xl font-black text-[#1e1b4b] mb-4 uppercase tracking-tight">{cat.name}</h3>
                 <div className="flex gap-2">
@@ -196,7 +202,7 @@ const AdminCategories = () => {
                     />
                     {editingCategory?.image ? (
                         <>
-                          <img src={editingCategory.image} className="w-full h-full object-contain p-2" alt="Preview" />
+                          <img src={getImageUrl(editingCategory.image)} className="w-full h-full object-contain p-2" alt="Preview" />
                           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded uppercase tracking-widest">Change</span>
                           </div>

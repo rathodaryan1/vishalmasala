@@ -3,6 +3,7 @@ import pureSpices from "@/assets/pure-spices.jpg";
 import asafoetida from "@/assets/asafoetida.jpg";
 import exoticSpices from "@/assets/exotic-spices.jpg";
 import pastes from "@/assets/pastes.jpg";
+import { getImageUrl } from "@/lib/utils";
 
 const categories = [
   {
@@ -53,9 +54,9 @@ const ProductCategories = () => {
             >
               <div className="h-56 overflow-hidden">
                 <img
-                  src={cat.image}
+                  src={getImageUrl(cat.image)}
                   alt={cat.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
                   width={640}
                   height={640}

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { Product } from "@/lib/products";
 import { useShop } from "@/context/ShopContext";
 import { useToast } from "@/hooks/use-toast";
+import { getImageUrl } from "@/lib/utils";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -48,9 +49,9 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
             {/* Left: Image Area */}
             <div className="md:w-1/2 bg-[#f8fafc] p-8 flex items-center justify-center relative">
               <img
-                src={product.image}
+                src={getImageUrl(product.image)}
                 alt={product.name}
-                className="max-w-full max-h-[400px] object-contain drop-shadow-2xl"
+                className="w-full h-full object-contain p-8"
               />
               {product.badge && (
                 <span className="absolute top-6 left-6 bg-[#facc15] text-[#78350f] text-[10px] font-black uppercase tracking-tighter px-2 py-1 rounded shadow-sm">

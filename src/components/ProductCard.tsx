@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, Heart } from "lucide-react";
 import QuickViewModal from "./QuickViewModal";
+import { getImageUrl } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;

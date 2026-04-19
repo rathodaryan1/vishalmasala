@@ -1,28 +1,29 @@
 import { Link } from "react-router-dom";
+import { getImageUrl } from "@/lib/utils";
 
 interface CategoryCardProps {
-  title: string;
+  name: string;
   image: string;
-  itemCount?: number;
+  count?: number;
 }
 
-const CategoryCard = ({ title, image, itemCount }: CategoryCardProps) => {
+const CategoryCard = ({ name, image, count }: CategoryCardProps) => {
   return (
     <Link
-      to={`/products?category=${encodeURIComponent(title)}`}
-      className="group relative bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col items-center text-center h-full animate-in fade-in slide-in-from-bottom-4 duration-700"
+      to={`/products?category=${encodeURIComponent(name.toUpperCase())}`}
+      className="group relative flex flex-col items-center bg-white border-2 border-slate-50 rounded-[2.5rem] p-6 text-center hover:shadow-2xl transition-all hover:-translate-y-2"
     >
-      <div className="relative w-full aspect-square mb-6 flex items-center justify-center overflow-hidden">
+      <div className="w-full aspect-square rounded-[2rem] bg-slate-50 mb-6 flex items-center justify-center overflow-hidden">
         <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700"
+          src={getImageUrl(image)}
+          alt={name}
+          className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
         />
       </div>
 
       <div className="relative z-10 w-full mt-auto">
         <h3 className="font-display text-lg md:text-xl font-black text-[#1e1b4b] mb-2 group-hover:text-[#be1e2d] transition-colors leading-tight uppercase tracking-tight">
-          {title}
+          {name}
         </h3>
         {itemCount !== undefined && (
           <p className="text-sm font-medium text-slate-500">

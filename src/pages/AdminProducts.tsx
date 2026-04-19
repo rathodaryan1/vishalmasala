@@ -46,6 +46,12 @@ const AdminProducts = () => {
     loadCategories();
   }, []);
 
+  const getImageUrl = (url: string) => {
+    if (!url) return "";
+    if (url.startsWith("data:") || url.startsWith("http")) return url;
+    return `${API_URL}${url}`;
+  };
+
   const sanitizeImageUrl = (url: string) => {
     if (!url) return "";
     
@@ -274,7 +280,7 @@ const AdminProducts = () => {
                     </div>
                     {editingProduct?.image && (
                       <div className="absolute inset-0 bg-white">
-                        <img src={editingProduct.image} className="w-full h-full object-contain p-2" alt="Preview" />
+                        <img src={getImageUrl(editingProduct.image)} className="w-full h-full object-contain p-2" alt="Preview" />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                             <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded">CHANGE PHOTO</span>
                         </div>
