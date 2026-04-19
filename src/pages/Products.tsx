@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Grid2X2, Grid3X3, List, ChevronDown } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
