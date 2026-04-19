@@ -276,7 +276,10 @@ const AdminBlogs = () => {
                     <label className="text-[9px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Image URL</label>
                     <input 
                       value={editingBlog?.image || ""} 
-                      onChange={e => setEditingBlog(p => ({ ...p, image: e.target.value }))}
+                      onChange={e => {
+                        const url = e.target.value;
+                        setEditingBlog(p => ({ ...p, image: sanitizeImageUrl(url) }));
+                      }}
                       className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-xs focus:ring-2 ring-primary/20 outline-none transition-all font-mono"
                       placeholder="https://images.unsplash.com/..."
                     />
