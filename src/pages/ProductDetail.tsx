@@ -69,11 +69,16 @@ const ProductDetail = () => {
             )}
           </div>
 
-          <div>
-            <h1 className="font-display text-3xl font-bold">{product.name}</h1>
-            {product.description && <p className="font-body text-slate-600 mt-2 italic">{product.description}</p>}
-            <p className="text-muted-foreground mt-4">{product.longDescription}</p>
-            <p className="text-xs mt-2 text-primary font-semibold">{product.category}</p>
+          <div className="space-y-6">
+            <div className="pb-6 border-b border-slate-100">
+                <span className="text-[#be1e2d] font-black uppercase tracking-[0.3em] text-[10px] mb-2 block">{product.category}</span>
+                <h1 className="font-display text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-4">{product.name}</h1>
+                {product.description && (
+                    <p className="font-body text-slate-500 text-lg leading-relaxed italic border-l-4 border-spice-gold pl-6">
+                        {product.description}
+                    </p>
+                )}
+            </div>
 
             <div className="mt-5">
               <p className="text-sm font-semibold mb-2">Select Weight</p>
@@ -103,31 +108,61 @@ const ProductDetail = () => {
               <button onClick={() => setQuantity((q) => q + 1)} className="w-9 h-9 rounded border border-border">+</button>
             </div>
 
-            <div className="mt-6 grid sm:grid-cols-2 gap-3">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
                 onClick={() => {
                   addToCart(product.id, variant.weight, quantity);
                   toast({ title: "Added to cart", description: `${product.name} (${variant.weight}) x ${quantity}` });
                 }}
-                className="py-3 rounded-lg bg-primary text-primary-foreground font-semibold flex justify-center items-center gap-2"
+                className="h-14 rounded-2xl bg-slate-900 text-white font-bold flex justify-center items-center gap-3 hover:bg-slate-800 transition-all active:scale-95"
               >
-                <ShoppingCart className="w-4 h-4" />
+                <ShoppingCart className="w-5 h-5" />
                 Add To Cart
               </button>
               <button
-                onClick={() => toggleWishlist(product.id)}
-                className="py-3 rounded-lg border border-primary text-primary font-semibold flex justify-center items-center gap-2"
+                onClick={() => {
+                  addToCart(product.id, variant.weight, quantity);
+                  navigate("/checkout");
+                }}
+                className="h-14 rounded-2xl bg-[#be1e2d] text-white font-bold flex justify-center items-center gap-3 hover:bg-[#a01926] transition-all shadow-xl shadow-red-200 active:scale-95"
               >
-                <Heart className={`w-4 h-4 ${isWishlisted(product.id) ? "fill-primary" : ""}`} />
-                {isWishlisted(product.id) ? "Wishlisted" : "Add Wishlist"}
+                Buy It Now
+              </button>
+            </div>
+            
+            <div className="mt-4">
+              <button
+                onClick={() => toggleWishlist(product.id)}
+                className="w-full h-14 rounded-2xl border-2 border-slate-100 text-slate-600 font-bold flex justify-center items-center gap-3 hover:border-[#be1e2d] hover:text-[#be1e2d] transition-all active:scale-95"
+              >
+                <Heart className={`w-5 h-5 ${isWishlisted(product.id) ? "fill-[#be1e2d] text-[#be1e2d]" : ""}`} />
+                {isWishlisted(product.id) ? "In Wishlist" : "Add to Wishlist"}
               </button>
             </div>
 
-            <ul className="mt-6 space-y-2 text-sm text-muted-foreground list-disc list-inside">
-              {product.highlights.map((highlight) => (
-                <li key={highlight}>{highlight}</li>
-              ))}
-            </ul>
+            <div className="pt-8 border-t border-slate-100">
+               <details className="group" open>
+                  <summary className="flex items-center justify-between cursor-pointer list-none">
+                    <span className="text-xs font-black uppercase tracking-[0.3em] text-slate-400">Product Description</span>
+                    <span className="text-slate-300 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div className="mt-6 text-slate-600 leading-relaxed font-medium animate-in fade-in slide-in-from-top-2 duration-300">
+                    {product.longDescription}
+                  </div>
+               </details>
+            </div>
+
+            <div className="pt-8 border-t border-slate-100">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-6">Product Highlights</h3>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {product.highlights.map((highlight) => (
+                  <li key={highlight} className="flex items-start gap-3 text-sm font-bold text-slate-700">
+                    <div className="w-1.5 h-1.5 rounded-full bg-spice-gold mt-1.5 shrink-0" />
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 

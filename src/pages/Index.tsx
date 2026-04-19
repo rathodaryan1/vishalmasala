@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { listBlogs, type BlogPost } from "@/lib/blogs";
 import { getImageUrl } from "@/lib/utils";
+import ProductMarquee from "@/components/ProductMarquee";
 
 const Index = () => {
   const { products } = useShop();
@@ -41,10 +42,14 @@ const Index = () => {
       <Navbar />
       <HeroBanner />
       
+      <ProductMarquee />
+
       {/* Top Selling Products Section */}
-      <section className="pt-20 pb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
-        <div className="container text-center">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#1e293b] mb-4">Top Selling Products</h2>
+      <section className="py-24 bg-[#f8fafc] animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <div className="container text-center mb-16">
+            <span className="text-[#be1e2d] font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Most Loved</span>
+            <h2 className="font-display text-4xl md:text-6xl font-black text-slate-900 mb-6">Trending This Season</h2>
+            <div className="w-24 h-2 bg-[#be1e2d] mx-auto rounded-full" />
         </div>
         <ProductSlider 
             products={products.filter(p => p.badge === "NEW PACK" || products.indexOf(p) < 8)} 
@@ -52,11 +57,12 @@ const Index = () => {
       </section>
 
       {/* Our Spices Collection */}
-      <section className="py-24 bg-white border-t border-slate-50 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <section className="py-32 bg-white border-t border-slate-50 animate-in fade-in duration-1000">
         <div className="container">
-          <div className="text-center mb-16 px-4">
-            <h2 className="font-display text-4xl md:text-5xl font-black text-[#1e293b] mb-4">Range of Spices</h2>
-            <div className="w-20 h-1.5 bg-[#be1e2d] mx-auto rounded-full" />
+          <div className="text-center mb-20 px-4">
+            <span className="text-[#be1e2d] font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">The Spice Catalog</span>
+            <h2 className="font-display text-4xl md:text-6xl font-black text-slate-900 mb-6">Range of Heritage Spices</h2>
+            <div className="w-24 h-2 bg-spice-gold mx-auto rounded-full" />
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
@@ -76,32 +82,45 @@ const Index = () => {
       </section>
 
       {/* Marketing Banner: Anokha Combination */}
-      <section className="relative py-24 overflow-hidden animate-in fade-in duration-1000">
-        <div className="absolute inset-0 bg-[#be1e2d] rotate-[-1deg] scale-110" />
-        <div className="relative container flex flex-col md:flex-row items-center justify-between gap-12">
+      <section className="relative py-32 overflow-hidden animate-in fade-in duration-1000">
+        <div className="absolute inset-0 bg-slate-900 rotate-[-1deg] scale-110" />
+        <div className="relative container flex flex-col md:flex-row items-center justify-between gap-16">
           <div className="text-white max-w-2xl">
-            <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-6 h-6 text-[#facc15]" />
-              <span className="font-black uppercase tracking-[.3em] text-xs">Premium Heritage</span>
+            <div className="flex items-center gap-2 mb-8">
+              <Sparkles className="w-6 h-6 text-spice-gold animate-pulse" />
+              <span className="font-black uppercase tracking-[.4em] text-xs text-spice-gold">Premium Heritage Selection</span>
             </div>
-            <h2 className="font-display text-4xl md:text-6xl font-black leading-tight mb-8">
+            <h2 className="font-display text-5xl md:text-7xl font-black leading-tight mb-10">
               Swad Aur Sehat Ka <br />
-              <span className="text-[#facc15]">Anokha Combination</span>
+              <span className="text-spice-gold italic">Anokha Combination</span>
             </h2>
-            <p className="text-white/80 text-lg mb-10 leading-relaxed max-w-lg font-medium italic">
+            <p className="text-white/70 text-xl mb-12 leading-relaxed max-w-lg font-medium italic border-l-4 border-spice-gold pl-8">
               "Experience the perfect harmony of taste and health with our farm-fresh, cold-ground spices that preserve essential oils and natural goodness."
             </p>
-            <Link 
-              to="/products"
-              className="inline-flex h-14 items-center px-10 bg-white text-[#be1e2d] font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-50 transition-all hover:-translate-y-1 shadow-2xl"
-            >
-              Shop the Range
-            </Link>
+            <div className="flex flex-wrap gap-6">
+              <Link 
+                to="/products"
+                className="inline-flex h-16 items-center px-10 bg-[#be1e2d] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#a01926] transition-all hover:-translate-y-1 shadow-2xl shadow-red-900/40"
+              >
+                Shop the Range
+              </Link>
+              <Link 
+                to="/about"
+                className="inline-flex h-16 items-center px-10 bg-white/10 backdrop-blur-md text-white border border-white/20 font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-white/20 transition-all"
+              >
+                Our Story
+              </Link>
+            </div>
           </div>
           
-          <div className="relative w-full max-w-sm aspect-square bg-white/10 rounded-[3rem] backdrop-blur-sm p-8 border border-white/20">
-             <div className="w-full h-full bg-white/20 rounded-[2rem] flex items-center justify-center text-white/40 italic text-center px-10">
-                [High Quality Spice Pack Image Display]
+          <div className="relative w-full max-w-lg aspect-square group">
+             <div className="absolute inset-0 bg-spice-gold/20 rounded-[4rem] blur-3xl group-hover:bg-spice-gold/40 transition-all duration-700" />
+             <div className="relative w-full h-full bg-white/5 rounded-[4rem] backdrop-blur-xl p-12 border border-white/10 flex items-center justify-center overflow-hidden">
+                <div className="w-full h-full bg-slate-800/50 rounded-[3rem] flex flex-col items-center justify-center text-white/30 italic text-center p-12 border border-white/5 group-hover:scale-105 transition-transform duration-700">
+                    <Sparkles className="w-12 h-12 mb-6 opacity-20" />
+                    <p className="font-display text-2xl font-bold mb-4 opacity-40">Authentic Spice Pack</p>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Coming Soon to your Kitchen</span>
+                </div>
              </div>
           </div>
         </div>

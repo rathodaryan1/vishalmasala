@@ -7,17 +7,17 @@ import heroBanner from "@/assets/hero-banner.jpg";
 const slides = [
   {
     image: heroBanner,
-    subtitle: "शुद्धता हर रसोई में",
-    title: "The Purest Indian Spices",
-    description: "Indian spices are savoured and sought around the world from ancient times because of their culinary and medicinal significance.",
+    subtitle: "heritage of purity",
+    title: "The Heart of Indian Kitchens",
+    description: "Bringing you the finest selection of hand-picked spices, cold-ground to preserve 100% natural oils and heritage aroma.",
     cta: "Explore Our Range",
     link: "/products"
   },
   {
     image: heroBanner,
-    subtitle: "Taste the Heritage",
-    title: "100% Authentic & Natural",
-    description: "Bringing you the finest selection of hand-picked spices, ground at low temperatures to preserve natural oils and intense aroma.",
+    subtitle: "Taste the Tradition",
+    title: "Pure Authentic & Natural",
+    description: "Savour the love in every bite. Our spices are crafted with care to bring out the true essence of Indian culinary excellence.",
     cta: "Shop Now",
     link: "/products"
   }
@@ -49,27 +49,27 @@ const HeroBanner = () => {
             <img
               src={slide.image}
               alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover opacity-60 md:opacity-100"
+              className="absolute inset-0 w-full h-full object-cover scale-105 animate-[pulse_8s_infinite] opacity-50 md:opacity-100"
             />
-            {/* High Fidelity Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#be1e2d] via-[#be1e2d]/60 to-transparent mix-blend-multiply" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            {/* Cinematic Overlay Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
 
-            <div className="relative container h-full flex flex-col justify-center text-white">
-              <div className="max-w-2xl space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
+            <div className="relative container h-full flex flex-col justify-center text-white px-6">
+              <div className="max-w-3xl space-y-8 animate-in fade-in slide-in-from-left-12 duration-1000">
                 <div className="inline-block px-4 py-1.5 bg-[#be1e2d] rounded-full">
                   <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-white">
                     {slide.subtitle}
                   </span>
                 </div>
                 
-                <h1 className="font-display text-5xl md:text-8xl font-black leading-tight drop-shadow-2xl">
+                <h1 className="font-display text-5xl md:text-[7rem] font-black leading-[1.1] drop-shadow-2xl">
                   {slide.title.split(" ").map((word, i) => (
                     <React.Fragment key={i}>
-                      {word === "Indian" || word === "Authentic" ? (
-                        <span className="text-[#facc15]">{word} </span>
+                      {word === "Indian" || word === "Pure" ? (
+                        <span className="text-spice-gold italic serif block md:inline">{word} </span>
                       ) : (
-                        <>{word} </>
+                        <span className="block md:inline">{word} </span>
                       )}
                     </React.Fragment>
                   ))}

@@ -1,8 +1,22 @@
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "https://vishalmasala.onrender.com";
 
 const Footer = () => {
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/categories`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setCategories(data.slice(0, 5));
+      })
+      .catch(err => console.error("Footer Categories Error:", err));
+  }, []);
+
   return (
     <footer id="contact" className="bg-spice-brown text-primary-foreground">
       <div className="container py-12 md:py-16">
@@ -26,15 +40,21 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-display text-lg font-bold mb-4 text-spice-gold">Products</h4>
-            <ul className="space-y-2">
-              {["Blended Spices", "Pure Spices", "Asafoetida", "Exotic Range", "Pastes"].map((link) => (
-                <li key={link}>
-                  <Link to="/products" className="font-body text-sm text-primary-foreground/60 hover:text-spice-gold transition-colors">
-                    {link}
+            <h4 className="font-display text-lg font-bold mb-6 text-spice-gold uppercase tracking-widest">Our Spices</h4>
+            <ul className="space-y-3">
+              {categories.length > 0 ? categories.map((cat) => (
+                <li key={cat._id}>
+                  <Link 
+                    to={`/products?category=${encodeURIComponent(cat.name)}`} 
+                    className="font-body text-xs font-bold text-white/50 hover:text-spice-gold uppercase tracking-widest transition-colors"
+                  >
+                    {cat.name}
                   </Link>
                 </li>
-              ))}
+              )) : (
+                <li><Link to="/products" className="font-body text-xs font-bold text-white/50 hover:text-spice-gold uppercase tracking-widest transition-colors">All Spices</Link></li>
+              )}
+              <li><Link to="/products" className="font-body text-xs font-bold text-white/50 hover:text-spice-gold uppercase tracking-widest transition-colors">Others</Link></li>
             </ul>
           </div>
 

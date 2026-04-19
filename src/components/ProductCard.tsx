@@ -54,7 +54,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg border border-slate-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col h-full relative">
+      <div className="bg-white rounded-lg border border-slate-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col h-full relative animate-in fade-in slide-in-from-bottom-2 duration-500">
         {/* Image Area */}
         <div className="relative p-4 bg-white aspect-square flex items-center justify-center overflow-hidden">
           {discount > 0 && (

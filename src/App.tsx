@@ -46,6 +46,7 @@ const App = () => (
             <BackToTop />
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/search" element={<Search />} />
               <Route path="/products" element={<Products />} />
               <Route path="/products/:productId" element={<ProductDetail />} />
               <Route path="/cart" element={<Cart />} />
