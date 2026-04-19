@@ -237,7 +237,7 @@ const AdminProducts = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Primary Image Upload */}
                   <div className="space-y-2">
-                    <label className="text-[9px] font-bold text-slate-400 ml-1">Primary Image</label>
+                    <label className="text-[9px] font-black uppercase tracking-widest text-[#be1e2d] ml-1">1st Image (Front View)</label>
                     <label className="relative flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-[#be1e2d] hover:bg-white transition-all group overflow-hidden">
                       <input 
                         type="file" 
@@ -258,7 +258,7 @@ const AdminProducts = () => {
                             const data = await res.json();
                             if (data.success) {
                               setEditingProduct(p => ({ ...p, image: data.url }));
-                              toast({ title: "Primary Uploaded" });
+                              toast({ title: "Front View Uploaded" });
                             }
                           } catch (err) {
                             toast({ title: "Upload Failed", variant: "destructive" });
@@ -269,64 +269,65 @@ const AdminProducts = () => {
                         <div className="absolute inset-0 bg-white">
                           <img src={getImageUrl(editingProduct.image)} className="w-full h-full object-contain p-2" alt="Primary" />
                           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                              <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded uppercase">Change</span>
+                              <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded uppercase">Change Front</span>
                           </div>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center text-slate-300">
                           <Plus className="w-6 h-6 mb-1" />
-                          <span className="text-[8px] font-black uppercase">Main Photo</span>
+                          <span className="text-[8px] font-black uppercase tracking-tighter">Upload Front</span>
                         </div>
                       )}
                     </label>
                   </div>
 
-                  {/* Additional Images (Gallery) */}
-                  <div className="lg:col-span-2 space-y-2">
-                    <label className="text-[9px] font-bold text-slate-400 ml-1">Gallery / Back View (2nd Image for Hover)</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {(editingProduct?.images || []).map((img, idx) => (
-                        <div key={idx} className="relative aspect-square bg-white rounded-xl border border-slate-100 overflow-hidden group">
-                           <img src={getImageUrl(img)} className="w-full h-full object-contain p-1" />
-                           <button 
-                             onClick={() => setEditingProduct(p => ({ ...p, images: p.images?.filter((_, i) => i !== idx) }))}
-                             className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                           >
-                             <X className="w-3 h-3" />
-                           </button>
+                  {/* Secondary Image Upload */}
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-[#be1e2d] ml-1">2nd Image (Back View)</label>
+                    <label className="relative flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-[#be1e2d] hover:bg-white transition-all group overflow-hidden">
+                      <input 
+                        type="file" 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setUploading(true);
+                          const formData = new FormData();
+                          formData.append("image", file);
+                          try {
+                            const res = await fetch(`${API_URL}/api/upload`, {
+                              method: "POST",
+                              headers: { Authorization: `Bearer ${user?.token}` },
+                              body: formData,
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                              // Store 2nd image in the images array at index 0
+                              const currentImages = [...(editingProduct.images || [])];
+                              currentImages[0] = data.url;
+                              setEditingProduct(p => ({ ...p, images: currentImages }));
+                              toast({ title: "Back View Uploaded" });
+                            }
+                          } catch (err) {
+                            toast({ title: "Upload Failed" });
+                          } finally { setUploading(false); }
+                        }}
+                      />
+                      {editingProduct?.images && editingProduct.images[0] ? (
+                        <div className="absolute inset-0 bg-white">
+                          <img src={getImageUrl(editingProduct.images[0])} className="w-full h-full object-contain p-2" alt="Secondary" />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                              <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded uppercase">Change Back</span>
+                          </div>
                         </div>
-                      ))}
-                      <label className="aspect-square border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#be1e2d] hover:bg-white transition-all text-slate-300">
-                        <input 
-                          type="file" 
-                          className="hidden" 
-                          accept="image/*"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-                            setUploading(true);
-                            const formData = new FormData();
-                            formData.append("image", file);
-                            try {
-                              const res = await fetch(`${API_URL}/api/upload`, {
-                                method: "POST",
-                                headers: { Authorization: `Bearer ${user?.token}` },
-                                body: formData,
-                              });
-                              const data = await res.json();
-                              if (data.success) {
-                                setEditingProduct(p => ({ ...p, images: [...(p.images || []), data.url] }));
-                                toast({ title: "Gallery Added" });
-                              }
-                            } catch (err) {
-                              toast({ title: "Upload Failed" });
-                            } finally { setUploading(false); }
-                          }}
-                        />
-                        <Plus className="w-4 h-4 mb-1" />
-                        <span className="text-[7px] font-black uppercase">Add View</span>
-                      </label>
-                    </div>
+                      ) : (
+                        <div className="flex flex-col items-center text-slate-300">
+                          <Plus className="w-6 h-6 mb-1" />
+                          <span className="text-[8px] font-black uppercase tracking-tighter">Upload Back</span>
+                        </div>
+                      )}
+                    </label>
                   </div>
                 </div>
 

@@ -51,7 +51,7 @@ const Navbar = () => {
           <Link to="/" className="font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">Home</Link>
           <div className="relative group h-20 flex items-center">
             <button className="flex items-center gap-1 font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">
-              Our Spices <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              Products <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
             </button>
             <div className="absolute top-full left-0 bg-white border border-slate-100 shadow-2xl rounded-2xl p-4 min-w-[240px] opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
               <div className="grid gap-1">
