@@ -27,6 +27,7 @@ import Search from "./pages/Search.tsx";
 import WhatsAppButton from "./components/WhatsAppButton.tsx";
 import BottomNav from "./components/BottomNav.tsx";
 import BackToTop from "./components/BackToTop.tsx";
+import ScrollToTop from "./components/ScrollToTop.tsx";
 import { ShopProvider } from "./context/ShopContext.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
@@ -42,6 +43,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <WhatsAppButton />
             <BottomNav />
             <BackToTop />

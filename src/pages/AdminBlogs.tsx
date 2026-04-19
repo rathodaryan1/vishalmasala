@@ -248,19 +248,26 @@ const AdminBlogs = () => {
                         }
                       }}
                     />
-                    <div className="flex flex-col items-center">
-                      {uploading ? (
-                        <div className="w-6 h-6 border-2 border-[#be1e2d] border-t-transparent rounded-full animate-spin"></div>
-                      ) : (
-                        <>
-                          <Plus className="w-6 h-6 text-slate-300 group-hover:text-[#be1e2d] mb-1" />
-                          <span className="text-[10px] font-black text-slate-400 group-hover:text-[#be1e2d]">UPLOAD PHOTO</span>
-                        </>
-                      )}
-                    </div>
-                    {editingBlog?.image && (
-                      <div className="absolute inset-0 bg-white">
-                        <img src={getImageUrl(editingBlog.image)} className="w-full h-full object-contain p-2" alt="Preview" />
+                    {editingBlog?.image ? (
+                      <div className="absolute inset-0 bg-white flex flex-col items-center justify-center p-2">
+                        <img src={getImageUrl(editingBlog.image)} className="w-full h-full object-contain mb-2" alt="Preview" />
+                        <button 
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditingBlog(p => ({ ...p, image: "" })); }}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        {uploading ? (
+                          <div className="w-6 h-6 border-2 border-[#be1e2d] border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <>
+                            <Plus className="w-6 h-6 text-slate-300 group-hover:text-[#be1e2d] mb-1" />
+                            <span className="text-[10px] font-black text-slate-400 group-hover:text-[#be1e2d]">UPLOAD PHOTO</span>
+                          </>
+                        )}
                       </div>
                     )}
                   </label>
