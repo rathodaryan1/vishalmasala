@@ -68,6 +68,12 @@ const ProductDetail = () => {
       <Navbar />
       
       <div className="container pt-32 pb-20">
+        {/* Top Product Title (per mockup) */}
+        <div className="mb-8">
+          <h1 className="font-display text-3xl font-bold text-[#be1e2d]">{product.name}</h1>
+          <div className="w-12 h-1 bg-slate-100 mt-2" />
+        </div>
+
         {/* Breadcrumbs */}
         <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-10">
           <Link to="/" className="hover:text-[#be1e2d] transition-colors">Home</Link>
