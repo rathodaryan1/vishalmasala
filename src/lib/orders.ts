@@ -1,6 +1,6 @@
 import type { CartItem } from "@/context/ShopContext";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://vishal-backend.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "https://vishalmasala.onrender.com";
 
 export type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
