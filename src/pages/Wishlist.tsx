@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useShop } from "@/context/ShopContext";
+import { getImageUrl } from "@/lib/utils";
 
 const Wishlist = () => {
   const { wishlist, toggleWishlist, addToCart, products, loadingProducts } = useShop();
@@ -29,15 +30,6 @@ const Wishlist = () => {
               if (!product) return null;
               const defaultVariant = product.variants[0];
               return (
-                <div key={product.id} className="border border-border rounded-xl p-4">
-                  <img src={product.image} alt={product.name} className="w-full h-44 object-contain bg-muted/30 rounded-lg" />
-                  <p className="font-semibold mt-3">{product.name}</p>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{product.description}</p>
-                  <p className="text-primary font-semibold mt-2">₹ {defaultVariant.price.toFixed(2)}</p>
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => addToCart(product.id, defaultVariant.weight, 1)}
-                      className="py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold"
                     >
                       Add to cart
                     </button>

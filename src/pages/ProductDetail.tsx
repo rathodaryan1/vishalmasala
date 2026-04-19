@@ -7,6 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import { useShop } from "@/context/ShopContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/products";
+import { getImageUrl } from "@/lib/utils";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -58,8 +59,14 @@ const ProductDetail = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-start">
-          <div className="bg-muted/30 rounded-xl border border-border p-6">
-            <img src={product.image} alt={product.name} className="w-full h-[420px] object-contain" />
+          <div className="md:w-1/2 bg-[#f8fafc] rounded-3xl p-8 flex items-center justify-center relative overflow-hidden group">
+            <img src={getImageUrl(product.image)} alt={product.name} className="w-full h-[420px] object-contain" />
+            
+            {product.badge && (
+              <span className="absolute top-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
+                {product.badge}
+              </span>
+            )}
           </div>
 
           <div>

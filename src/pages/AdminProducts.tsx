@@ -150,7 +150,7 @@ const AdminProducts = () => {
             {products.map((product) => (
               <div key={product.id} className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300">
                 <div className="relative h-48 bg-muted/50 p-6">
-                  <img src={product.image} alt={product.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                  <img src={getImageUrl(product.image)} alt={product.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <a 
                       href={`/products/${product.id}`} 

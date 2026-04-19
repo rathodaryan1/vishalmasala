@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { fetchBlogBySlug, type BlogPost } from "@/lib/blogs";
+import { getImageUrl } from "@/lib/utils";
 
 const BlogDetail = () => {
   const { slug } = useParams();
@@ -40,9 +41,9 @@ const BlogDetail = () => {
       <Navbar />
       
       {/* Blog Hero */}
-      <div className="relative h-[50vh] min-h-[400px] overflow-hidden">
-        <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+      <div className="relative h-[400px] md:h-[600px] bg-muted overflow-hidden">
+        <img src={getImageUrl(blog.image)} alt={blog.title} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="container text-center">
             <Link to="/blog" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors group">

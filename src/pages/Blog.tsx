@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { listBlogs, type BlogPost } from "@/lib/blogs";
+import { getImageUrl } from "@/lib/utils";
 
 const Blog = () => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -53,7 +54,7 @@ const Blog = () => {
               >
                 <div className="relative aspect-[16/10] overflow-hidden rounded-2xl mb-6 shadow-md group-hover:shadow-2xl transition-all duration-500">
                   <img 
-                    src={blog.image} 
+                    src={getImageUrl(blog.image)} 
                     alt={blog.title} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   />

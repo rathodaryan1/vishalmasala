@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useShop } from "@/context/ShopContext";
 import { calculateCartTotals } from "@/lib/cart";
+import { getImageUrl } from "@/lib/utils";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -37,8 +38,8 @@ const Cart = () => {
           <div className="grid lg:grid-cols-[1fr_320px] gap-6">
             <div className="space-y-4">
               {resolved.map(({ item, product, variant }) => (
-                <div key={`${item.productId}-${item.variantWeight}`} className="border border-border rounded-xl p-4 flex gap-4">
-                  <img src={product.image} alt={product.name} className="w-24 h-24 object-contain bg-muted/30 rounded-lg" />
+                <div key={`${item.productId}-${item.variantWeight}`} className="flex items-center gap-6 py-6 border-b border-border last:border-0 group">
+                  <img src={getImageUrl(product.image)} alt={product.name} className="w-24 h-24 object-contain bg-muted/30 rounded-lg" />
                   <div className="flex-1">
                     <p className="font-semibold">{product.name}</p>
                     <p className="text-sm text-muted-foreground">{item.variantWeight}</p>
