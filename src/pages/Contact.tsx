@@ -224,11 +224,13 @@ const Contact = () => {
             </div>
 
             {/* Wholesale/Bulk Query Branding */}
-            <div className="bg-white p-8 rounded-[3rem] border-4 border-[#be1e2d] shadow-xl text-center flex flex-col items-center">
-               <IndianRupee className="w-10 h-10 text-[#be1e2d] mb-4" />
-               <h4 className="font-display text-xl font-black text-slate-800 mb-2">Wholesale Inquiries</h4>
-               <p className="text-slate-500 text-sm mb-6 font-medium">For hotel, restaurant or exports orders.</p>
-               <Link to="/contact" className="text-[#be1e2d] font-black text-[10px] uppercase tracking-widest border-b-2 border-[#be1e2d] pb-1 hover:text-[#a01926] transition-colors">Apply Now</Link>
+            <div className="bg-slate-900 p-8 rounded-[3rem] border-4 border-spice-gold shadow-2xl text-center flex flex-col items-center">
+               <IndianRupee className="w-10 h-10 text-spice-gold mb-4" />
+               <h4 className="font-display text-xl font-black text-white mb-2">Wholesale Inquiries</h4>
+               <p className="text-white/60 text-sm mb-6 font-medium">For hotel, restaurant or exports orders.</p>
+               <a href="https://wa.me/919375425771?text=Wholesale%20Inquiry%20for%20Vishal%20Masala" className="w-full h-14 bg-spice-gold text-slate-900 rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white transition-all shadow-xl">
+                  Message Wholesale Team
+               </a>
             </div>
           </div>
         </div>

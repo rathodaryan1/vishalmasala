@@ -18,19 +18,11 @@ const ProductMarquee = () => {
         </div>
       </div>
       
-      <div className="relative flex overflow-x-hidden">
+      <div className="relative flex overflow-hidden">
         <div className="animate-marquee flex gap-8 whitespace-nowrap py-10 px-4">
           {displayProducts.map((product, idx) => (
             <div key={`${product.id}-${idx}`} className="w-[300px] inline-block shrink-0">
               <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
-
-        <div className="absolute top-0 animate-marquee2 flex gap-8 whitespace-nowrap py-10 px-4">
-          {displayProducts.map((product, idx) => (
-            <div key={`${product.id}-second-${idx}`} className="w-[300px] inline-block shrink-0">
-               <ProductCard product={product} />
             </div>
           ))}
         </div>
@@ -39,18 +31,12 @@ const ProductMarquee = () => {
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes marquee {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-33.333%); }
         }
         .animate-marquee {
-          animation: marquee 60s linear infinite;
+          animation: marquee 40s linear infinite;
         }
         .animate-marquee:hover {
-          animation-play-state: paused;
-        }
-        .animate-marquee2 {
-          animation: marquee 60s linear infinite;
-        }
-        .animate-marquee2:hover {
           animation-play-state: paused;
         }
       `}} />

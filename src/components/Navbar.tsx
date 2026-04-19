@@ -69,6 +69,7 @@ const Navbar = () => {
               </div>
             </div>
           </div>
+          <Link to="/about" className="font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">About Us</Link>
           <Link to="/offers" className="font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">Offers</Link>
           <Link to="/blog" className="font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">Blog</Link>
           <Link to="/contact" className="font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">Contact</Link>

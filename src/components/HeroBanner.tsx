@@ -87,10 +87,10 @@ const HeroBanner = () => {
                     {slide.cta}
                   </a>
                   <a
-                    href="#about"
+                    href="https://wa.me/919375425771?text=Wholesale%20Inquiry%20for%20Vishal%20Masala"
                     className="group h-16 inline-flex items-center gap-3 text-white font-black uppercase tracking-widest text-xs"
                   >
-                   <span className="border-b-2 border-white/40 group-hover:border-white transition-all pb-1">Read More</span>
+                   <span className="border-b-2 border-white/40 group-hover:border-white transition-all pb-1">Wholesale Inquiry</span>
                    <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-[#be1e2d] transition-all">
                       <ChevronRight className="w-5 h-5" />
                    </div>
