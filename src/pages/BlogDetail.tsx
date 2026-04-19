@@ -13,10 +13,15 @@ const BlogDetail = () => {
 
   useEffect(() => {
     const load = async () => {
-      if (!slug) return;
-      const { data } = await fetchBlogBySlug(slug);
-      setBlog(data);
-      setLoading(false);
+      try {
+        if (!slug) return;
+        const { data } = await fetchBlogBySlug(slug);
+        setBlog(data);
+      } catch (err) {
+        console.error("Error loading blog:", err);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, [slug]);
@@ -44,15 +49,14 @@ const BlogDetail = () => {
       <div className="relative h-[400px] md:h-[600px] bg-muted overflow-hidden">
         <img src={getImageUrl(blog.image)} alt={blog.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="container text-center">
+          <div className="container pb-12">
             <Link to="/blog" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors group">
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Journal
             </Link>
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight">
+            <h1 className="font-display text-4xl md:text-6xl font-bold text-white max-w-4xl leading-tight">
               {blog.title}
             </h1>
-            <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-white/90 font-body text-sm font-semibold tracking-wide">
+            <div className="flex flex-wrap items-center gap-6 mt-8 text-white/90 font-body text-sm font-semibold tracking-wide">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-primary" /> {blog.date}
               </div>
