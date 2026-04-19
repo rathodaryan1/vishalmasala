@@ -58,7 +58,7 @@ const AdminProducts = () => {
     const driveRegex = /(?:d\/|id=|file\/d\/)([a-zA-Z0-9_-]{25,})/;
     const match = url.match(driveRegex);
     if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/u/0/d/${match[1]}`;
+      return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
     }
     return url;
   };
