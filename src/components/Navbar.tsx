@@ -12,7 +12,7 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [search, setSearch] = useState("");
-  const { cartCount, wishlist } = useShop();
+  const { cartCount, wishlist, products } = useShop();
   const { user } = useAuth();
   const navigate = useNavigate();
 
