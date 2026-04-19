@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Menu, Search, ShoppingCart, User, X, LayoutDashboard, ChevronDown } from "lucide-react";
+import { Heart, Menu, Search, ShoppingCart, User, X, LayoutDashboard, ChevronDown, ChevronRight } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useShop } from "@/context/ShopContext";
 import { useAuth } from "@/context/AuthContext";
@@ -50,9 +50,12 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-8">
           <Link to="/" className="font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">Home</Link>
           <div className="relative group h-20 flex items-center">
-            <button className="flex items-center gap-1 font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest">
+            <Link 
+              to="/products"
+              className="flex items-center gap-1 font-body text-sm font-bold text-foreground hover:text-primary transition-all uppercase tracking-widest"
+            >
               Products <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
-            </button>
+            </Link>
             <div className="absolute top-full left-0 bg-white border border-slate-100 shadow-2xl rounded-2xl p-4 min-w-[240px] opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
               <div className="grid gap-1">
                 {categories.length > 0 ? categories.map((cat) => (
@@ -175,6 +178,13 @@ const Navbar = () => {
             <div className="space-y-2">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#be1e2d] px-4 mb-3">Categories</p>
               <div className="grid gap-1 px-2">
+                <Link
+                  to="/products"
+                  className="px-4 py-3 bg-red-50/50 rounded-2xl text-xs font-black uppercase tracking-widest text-[#be1e2d] flex items-center justify-between"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  All Products <ChevronRight className="w-3 h-3" />
+                </Link>
                 {categories.map((cat) => (
                   <Link
                     key={cat._id}
