@@ -24,8 +24,17 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+// Configure CORS for split deployment
+app.use(
+  cors({
+    origin: ["https://vishalmasala.vercel.app", "http://localhost:8080", "http://localhost:8081", "http://localhost:8082"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
