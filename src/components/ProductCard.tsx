@@ -87,13 +87,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </button>
           </div>
           
-          <Link to={`/products/${product.id}`} className="w-full h-full flex items-center justify-center">
+          <Link to={`/products/${product.id}`} className="w-full h-full relative flex items-center justify-center overflow-hidden">
             <img
               src={getImageUrl(product.image)}
               alt={product.name}
-              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+              className={`w-full h-full object-contain transition-all duration-500 ${product.images && product.images.length > 0 ? "group-hover:opacity-0 group-hover:scale-95" : "group-hover:scale-105"}`}
               loading="lazy"
             />
+            {product.images && product.images.length > 0 && (
+              <img
+                src={getImageUrl(product.images[0])}
+                alt={`${product.name} back`}
+                className="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                loading="lazy"
+              />
+            )}
           </Link>
         </div>
 

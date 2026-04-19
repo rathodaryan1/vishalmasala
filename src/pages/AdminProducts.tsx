@@ -72,7 +72,8 @@ const AdminProducts = () => {
     setLoading(true);
     const sanitizedProduct = {
       ...editingProduct,
-      image: sanitizeImageUrl(editingProduct.image || "")
+      image: sanitizeImageUrl(editingProduct.image || ""),
+      images: (editingProduct.images || []).map(img => sanitizeImageUrl(img))
     };
 
     const result = editingProduct.id 
@@ -233,80 +234,113 @@ const AdminProducts = () => {
                   {loading && <span className="text-[10px] font-black text-[#be1e2d] animate-pulse">PROCESSING...</span>}
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* File Upload Area */}
-                  <label className="relative flex flex-col items-center justify-center h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-[#be1e2d] hover:bg-white transition-all group overflow-hidden">
-                    <input 
-                      type="file" 
-                      className="hidden" 
-                      accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        
-                        setUploading(true);
-                        const formData = new FormData();
-                        formData.append("image", file);
-                        
-                        try {
-                          // Show toast for cold start awareness
-                          toast({ title: "Connecting to server...", description: "Please wait while we wake up the image processor. This may take a minute on initial upload." });
-                          
-                          const res = await fetch(`${API_URL}/api/upload`, {
-                            method: "POST",
-                            headers: {
-                              Authorization: `Bearer ${user?.token}`,
-                            },
-                            body: formData,
-                          });
-                          const data = await res.json();
-                          if (data.success) {
-                            setEditingProduct(p => ({ ...p, image: data.url }));
-                            toast({ title: "Image Uploaded", description: "Compressed successfully (WebP)" });
-                          } else {
-                            throw new Error(data.message);
-                          }
-                        } catch (err: any) {
-                          toast({ title: "Upload Failed", description: "The server took too long to respond. Please try again in 30 seconds as the server is now waking up.", variant: "destructive" });
-                        } finally {
-                          setUploading(false);
-                        }
-                      }}
-                    />
-                    <div className="flex flex-col items-center">
-                      {uploading ? (
-                        <>
-                          <div className="w-6 h-6 border-2 border-[#be1e2d] border-t-transparent rounded-full animate-spin mb-2"></div>
-                          <span className="text-[10px] font-black text-[#be1e2d] animate-pulse">WAKING SERVER...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="w-6 h-6 text-slate-300 group-hover:text-[#be1e2d] mb-2" />
-                          <span className="text-[10px] font-black text-slate-400 group-hover:text-[#be1e2d]">UPLOAD PHOTO</span>
-                        </>
-                      )}
-                    </div>
-                    {editingProduct?.image && (
-                      <div className="absolute inset-0 bg-white">
-                        <img src={getImageUrl(editingProduct.image)} className="w-full h-full object-contain p-2" alt="Preview" />
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                            <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded">CHANGE PHOTO</span>
-                        </div>
-                      </div>
-                    )}
-                  </label>
-
-                  {/* Manual URL Input */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Primary Image Upload */}
                   <div className="space-y-2">
-                    <label className="text-[9px] font-bold text-slate-400 ml-1">Or Paste URL</label>
-                    <input 
-                      value={editingProduct?.image || ""} 
-                      onChange={e => setEditingProduct(p => ({ ...p, image: e.target.value }))}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-primary/20 outline-none transition-all font-mono text-[10px]"
-                      placeholder="https://example.com/image.jpg"
-                    />
-                    <p className="text-[9px] text-slate-400 italic px-1">Supports Google Drive links.</p>
+                    <label className="text-[9px] font-bold text-slate-400 ml-1">Primary Image</label>
+                    <label className="relative flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-[#be1e2d] hover:bg-white transition-all group overflow-hidden">
+                      <input 
+                        type="file" 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setUploading(true);
+                          const formData = new FormData();
+                          formData.append("image", file);
+                          try {
+                            const res = await fetch(`${API_URL}/api/upload`, {
+                              method: "POST",
+                              headers: { Authorization: `Bearer ${user?.token}` },
+                              body: formData,
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                              setEditingProduct(p => ({ ...p, image: data.url }));
+                              toast({ title: "Primary Uploaded" });
+                            }
+                          } catch (err) {
+                            toast({ title: "Upload Failed", variant: "destructive" });
+                          } finally { setUploading(false); }
+                        }}
+                      />
+                      {editingProduct?.image ? (
+                        <div className="absolute inset-0 bg-white">
+                          <img src={getImageUrl(editingProduct.image)} className="w-full h-full object-contain p-2" alt="Primary" />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                              <span className="text-[8px] font-black text-white px-2 py-1 border border-white rounded uppercase">Change</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center text-slate-300">
+                          <Plus className="w-6 h-6 mb-1" />
+                          <span className="text-[8px] font-black uppercase">Main Photo</span>
+                        </div>
+                      )}
+                    </label>
                   </div>
+
+                  {/* Additional Images (Gallery) */}
+                  <div className="lg:col-span-2 space-y-2">
+                    <label className="text-[9px] font-bold text-slate-400 ml-1">Gallery / Back View (2nd Image for Hover)</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {(editingProduct?.images || []).map((img, idx) => (
+                        <div key={idx} className="relative aspect-square bg-white rounded-xl border border-slate-100 overflow-hidden group">
+                           <img src={getImageUrl(img)} className="w-full h-full object-contain p-1" />
+                           <button 
+                             onClick={() => setEditingProduct(p => ({ ...p, images: p.images?.filter((_, i) => i !== idx) }))}
+                             className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                           >
+                             <X className="w-3 h-3" />
+                           </button>
+                        </div>
+                      ))}
+                      <label className="aspect-square border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#be1e2d] hover:bg-white transition-all text-slate-300">
+                        <input 
+                          type="file" 
+                          className="hidden" 
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setUploading(true);
+                            const formData = new FormData();
+                            formData.append("image", file);
+                            try {
+                              const res = await fetch(`${API_URL}/api/upload`, {
+                                method: "POST",
+                                headers: { Authorization: `Bearer ${user?.token}` },
+                                body: formData,
+                              });
+                              const data = await res.json();
+                              if (data.success) {
+                                setEditingProduct(p => ({ ...p, images: [...(p.images || []), data.url] }));
+                                toast({ title: "Gallery Added" });
+                              }
+                            } catch (err) {
+                              toast({ title: "Upload Failed" });
+                            } finally { setUploading(false); }
+                          }}
+                        />
+                        <Plus className="w-4 h-4 mb-1" />
+                        <span className="text-[7px] font-black uppercase">Add View</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Manual Link Manager */}
+                <div className="pt-4 border-t border-slate-100">
+                   <div className="space-y-2">
+                      <label className="text-[9px] font-bold text-slate-400">Manual Image URLs (One per line)</label>
+                      <textarea 
+                        value={(editingProduct?.images || []).join("\n")}
+                        onChange={e => setEditingProduct(p => ({ ...p, images: e.target.value.split("\n").filter(l => l.trim()) }))}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[10px] font-mono focus:ring-2 ring-red-100 outline-none transition-all h-20"
+                        placeholder="Paste additional Drive/Public links here..."
+                      />
+                   </div>
                 </div>
               </div>
 

@@ -9,7 +9,8 @@ export interface ProductVariant {
 export interface Product {
   id: string;
   name: string;
-  image: string;
+  image: string; // Keep for backward compatibility (primary image)
+  images?: string[]; // New array for multiple images
   category: string;
   description: string;
   longDescription: string;
