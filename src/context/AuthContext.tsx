@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
-const API_URL = "";
+const API_URL = import.meta.env.VITE_API_URL || "https://vishal-backend.onrender.com"; // Default to future Render URL
 
 export interface AuthUser {
   id: string;
