@@ -51,9 +51,11 @@ const ProductDetail = () => {
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!imgRef.current) return;
     const { left, top, width, height } = imgRef.current.getBoundingClientRect();
-    const x = ((e.pageX - left - window.scrollX) / width) * 100;
-    const y = ((e.pageY - top - window.scrollY) / height) * 100;
-    setZoomPos({ x, y });
+    const px = e.clientX - left;
+    const py = e.clientY - top;
+    const x = (px / width) * 100;
+    const y = (py / height) * 100;
+    setZoomPos({ x, y, px, py });
   };
 
   if (loadingProducts) return <div className="min-h-screen bg-white" />;
@@ -89,9 +91,9 @@ const ProductDetail = () => {
             ))}
           </div>
 
-          {/* Main Image with Zoom */}
+          {/* Main Image with Lens Zoom */}
           <div 
-            className="relative bg-white rounded-3xl p-8 border border-slate-100 flex items-center justify-center cursor-zoom-in overflow-hidden group h-[600px]"
+            className="relative bg-white rounded-3xl p-8 border border-slate-100 flex items-center justify-center cursor-none overflow-hidden group h-[600px]"
             onMouseEnter={() => setShowZoom(true)}
             onMouseLeave={() => setShowZoom(false)}
             onMouseMove={handleMouseMove}
@@ -103,14 +105,16 @@ const ProductDetail = () => {
               className="max-w-full max-h-full object-contain animate-in fade-in zoom-in-95 duration-500" 
             />
             
-            {/* Zoom Overlay */}
+            {/* Magnifying Glass Lens */}
             {showZoom && (
               <div 
-                className="absolute inset-0 pointer-events-none z-20 bg-white"
+                className="absolute pointer-events-none z-20 border-4 border-white shadow-[0_0_20px_rgba(0,0,0,0.2)] rounded-full w-48 h-48 overflow-hidden bg-white"
                 style={{
+                  left: `${zoomPos.px - 96}px`,
+                  top: `${zoomPos.py - 96}px`,
                   backgroundImage: `url(${getImageUrl(activeImage)})`,
                   backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                  backgroundSize: '250%',
+                  backgroundSize: '400%',
                   backgroundRepeat: 'no-repeat'
                 }}
               />

@@ -7,13 +7,30 @@ import ProductCard from "@/components/ProductCard";
 import { useShop } from "@/context/ShopContext";
 
 const sortOptions = ["Featured", "Price: Low to High", "Price: High to Low", "Newest"];
-const categories = ["All", "Basic Spices", "Blended Spices", "Pure Spices", "Asafoetida", "Exotic Range"];
+
+const API_URL = import.meta.env.VITE_API_URL || "https://vishalmasala.onrender.com";
 
 const Products = () => {
   const { products, loadingProducts } = useShop();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q")?.toLowerCase().trim() ?? "";
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const initialCategory = searchParams.get("category") || "All";
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [categories, setCategories] = useState<string[]>(["All"]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/categories`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setCategories(["All", ...data.map((c: any) => c.name)]);
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    if (initialCategory) setSelectedCategory(initialCategory);
+  }, [initialCategory]);
   const [sortBy, setSortBy] = useState("Featured");
   const [gridCols, setGridCols] = useState<2 | 3 | 4>(4);
   const [showSort, setShowSort] = useState(false);
