@@ -247,7 +247,7 @@ const AdminProducts = () => {
                         formData.append("image", file);
                         
                         try {
-                          const res = await fetch("/api/upload", {
+                          const res = await fetch(`${API_URL}/api/upload`, {
                             method: "POST",
                             headers: {
                               Authorization: `Bearer ${user?.token}`,
