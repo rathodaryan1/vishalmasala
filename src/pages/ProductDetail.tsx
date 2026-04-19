@@ -71,7 +71,8 @@ const ProductDetail = () => {
 
           <div>
             <h1 className="font-display text-3xl font-bold">{product.name}</h1>
-            <p className="text-muted-foreground mt-2">{product.longDescription}</p>
+            {product.description && <p className="font-body text-slate-600 mt-2 italic">{product.description}</p>}
+            <p className="text-muted-foreground mt-4">{product.longDescription}</p>
             <p className="text-xs mt-2 text-primary font-semibold">{product.category}</p>
 
             <div className="mt-5">

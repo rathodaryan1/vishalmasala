@@ -71,6 +71,12 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                 </Dialog.Close>
               </div>
 
+              {product.description && (
+                <p className="font-body text-slate-600 mb-6 leading-relaxed italic">
+                  {product.description}
+                </p>
+              )}
+
               <div className="mb-8">
                 <div className="flex items-center gap-4 mb-1">
                   <span className="text-3xl font-black text-[#be1e2d]">
