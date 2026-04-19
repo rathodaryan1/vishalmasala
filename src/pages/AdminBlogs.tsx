@@ -6,6 +6,9 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 import { listBlogs, createBlog, updateBlog, deleteBlog, type BlogPost } from "@/lib/blogs";
 import { useToast } from "@/hooks/use-toast";
+import { getImageUrl } from "@/lib/utils";
+
+const API_URL = import.meta.env.VITE_API_URL || "https://vishalmasala.onrender.com";
 
 const AdminBlogs = () => {
   const { logout } = useAuth();
@@ -13,8 +16,10 @@ const AdminBlogs = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Partial<BlogPost> | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const { user } = useAuth();
 
   const loadBlogs = async () => {
     setLoading(true);
@@ -117,7 +122,7 @@ const AdminBlogs = () => {
             {blogs.map((blog) => (
               <div key={blog._id} className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col">
                 <div className="relative h-48 bg-muted overflow-hidden">
-                  <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <img src={getImageUrl(blog.image)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button onClick={() => { setEditingBlog(blog); setShowModal(true); }} className="p-2 bg-white/90 backdrop-blur rounded-lg text-blue-600 shadow-sm"><Pencil className="w-4 h-4" /></button>
                     <button onClick={() => handleDelete(blog._id)} className="p-2 bg-white/90 backdrop-blur rounded-lg text-red-600 shadow-sm"><Trash2 className="w-4 h-4" /></button>
@@ -200,14 +205,76 @@ const AdminBlogs = () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Cover Image URL</label>
-                <input 
-                  value={editingBlog?.image || ""} 
-                  onChange={e => setEditingBlog(p => ({ ...p, image: e.target.value }))}
-                  className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 focus:ring-2 ring-primary/20 outline-none transition-all"
-                  placeholder="https://images.unsplash.com/..."
-                />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between px-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Article Imagery</label>
+                  {uploading && <span className="text-[10px] font-black text-[#be1e2d] animate-pulse uppercase tracking-[0.2em] transition-all">Waking Server...</span>}
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="relative flex flex-col items-center justify-center h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-[#be1e2d] transition-all group overflow-hidden bg-muted/20">
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        
+                        setUploading(true);
+                        const formData = new FormData();
+                        formData.append("image", file);
+                        
+                        try {
+                          toast({ title: "Connecting to server...", description: "Please wait while we prepare the image processor." });
+                          const res = await fetch(`${API_URL}/api/upload`, {
+                            method: "POST",
+                            headers: {
+                              Authorization: `Bearer ${user?.token}`,
+                            },
+                            body: formData,
+                          });
+                          const data = await res.json();
+                          if (data.success) {
+                            setEditingBlog(p => ({ ...p, image: data.url }));
+                            toast({ title: "Journal Cover Uploaded", description: "Compressed successfully." });
+                          } else {
+                            throw new Error(data.message);
+                          }
+                        } catch (err: any) {
+                          toast({ title: "Upload Failed", description: "The server is waking up. Please try again in 30 seconds.", variant: "destructive" });
+                        } finally {
+                          setUploading(false);
+                        }
+                      }}
+                    />
+                    <div className="flex flex-col items-center">
+                      {uploading ? (
+                        <div className="w-6 h-6 border-2 border-[#be1e2d] border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <>
+                          <Plus className="w-6 h-6 text-slate-300 group-hover:text-[#be1e2d] mb-1" />
+                          <span className="text-[10px] font-black text-slate-400 group-hover:text-[#be1e2d]">UPLOAD PHOTO</span>
+                        </>
+                      )}
+                    </div>
+                    {editingBlog?.image && (
+                      <div className="absolute inset-0 bg-white">
+                        <img src={getImageUrl(editingBlog.image)} className="w-full h-full object-contain p-2" alt="Preview" />
+                      </div>
+                    )}
+                  </label>
+
+                  <div className="space-y-2 flex flex-col justify-center">
+                    <label className="text-[9px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Image URL</label>
+                    <input 
+                      value={editingBlog?.image || ""} 
+                      onChange={e => setEditingBlog(p => ({ ...p, image: e.target.value }))}
+                      className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-xs focus:ring-2 ring-primary/20 outline-none transition-all font-mono"
+                      placeholder="https://images.unsplash.com/..."
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">

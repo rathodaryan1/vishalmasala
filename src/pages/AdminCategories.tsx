@@ -19,6 +19,7 @@ const AdminCategories = () => {
   const { toast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -172,7 +173,7 @@ const AdminCategories = () => {
               <div className="space-y-4 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
                 <div className="flex items-center justify-between px-1">
                   <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Media Manager</label>
-                  {loading && <span className="text-[10px] font-black text-[#be1e2d] animate-pulse">PROCESSING...</span>}
+                  {uploading && <span className="text-[10px] font-black text-[#be1e2d] animate-pulse">WAKING SERVER...</span>}
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -183,21 +184,27 @@ const AdminCategories = () => {
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
-                        setLoading(true);
+                        setUploading(true);
                         const formData = new FormData();
                         formData.append("image", file);
                         try {
+                          toast({ title: "Connecting to server...", description: "Please wait while we wake up the image processor." });
                           const res = await fetch(`${API_URL}/api/upload`, {
                             method: "POST",
                             headers: { Authorization: `Bearer ${user?.token}` },
                             body: formData,
                           });
                           const data = await res.json();
-                          if (data.success) setEditingCategory(p => ({ ...p, image: data.url }));
-                        } catch (err) {
-                           toast({ title: "Upload Failed", variant: "destructive" });
+                          if (data.success) {
+                            setEditingCategory(p => ({ ...p, image: data.url }));
+                            toast({ title: "Image Uploaded", description: "Successfully processed." });
+                          } else {
+                            throw new Error(data.message);
+                          }
+                        } catch (err: any) {
+                           toast({ title: "Upload Failed", description: "The server is waking up. Please try again in a moment.", variant: "destructive" });
                         }
-                        setLoading(false);
+                        setUploading(false);
                       }} 
                     />
                     {editingCategory?.image ? (
@@ -209,8 +216,14 @@ const AdminCategories = () => {
                         </>
                     ) : (
                         <div className="flex flex-col items-center text-slate-300">
-                           <Upload className="w-6 h-6 mb-1" />
-                           <span className="text-[8px] font-black uppercase tracking-widest">Upload Photo</span>
+                           {uploading ? (
+                             <div className="w-6 h-6 border-2 border-[#be1e2d] border-t-transparent rounded-full animate-spin"></div>
+                           ) : (
+                             <>
+                               <Upload className="w-6 h-6 mb-1" />
+                               <span className="text-[8px] font-black uppercase tracking-widest">Upload Photo</span>
+                             </>
+                           )}
                         </div>
                     )}
                   </label>

@@ -13,6 +13,7 @@ const AdminProducts = () => {
   const { refreshProducts } = useShop();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Partial<Product> | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -248,11 +249,14 @@ const AdminProducts = () => {
                         const file = e.target.files?.[0];
                         if (!file) return;
                         
-                        setLoading(true);
+                        setUploading(true);
                         const formData = new FormData();
                         formData.append("image", file);
                         
                         try {
+                          // Show toast for cold start awareness
+                          toast({ title: "Connecting to server...", description: "Please wait while we wake up the image processor. This may take a minute on initial upload." });
+                          
                           const res = await fetch(`${API_URL}/api/upload`, {
                             method: "POST",
                             headers: {
@@ -268,15 +272,24 @@ const AdminProducts = () => {
                             throw new Error(data.message);
                           }
                         } catch (err: any) {
-                          toast({ title: "Upload Failed", description: err.message, variant: "destructive" });
+                          toast({ title: "Upload Failed", description: "The server took too long to respond. Please try again in 30 seconds as the server is now waking up.", variant: "destructive" });
                         } finally {
-                          setLoading(false);
+                          setUploading(false);
                         }
                       }}
                     />
                     <div className="flex flex-col items-center">
-                      <Plus className="w-6 h-6 text-slate-300 group-hover:text-[#be1e2d] mb-2" />
-                      <span className="text-[10px] font-black text-slate-400 group-hover:text-[#be1e2d]">UPLOAD PHOTO</span>
+                      {uploading ? (
+                        <>
+                          <div className="w-6 h-6 border-2 border-[#be1e2d] border-t-transparent rounded-full animate-spin mb-2"></div>
+                          <span className="text-[10px] font-black text-[#be1e2d] animate-pulse">WAKING SERVER...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-6 h-6 text-slate-300 group-hover:text-[#be1e2d] mb-2" />
+                          <span className="text-[10px] font-black text-slate-400 group-hover:text-[#be1e2d]">UPLOAD PHOTO</span>
+                        </>
+                      )}
                     </div>
                     {editingProduct?.image && (
                       <div className="absolute inset-0 bg-white">
