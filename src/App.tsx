@@ -23,6 +23,7 @@ import Offers from "./pages/Offers.tsx";
 import Blog from "./pages/Blog.tsx";
 import BlogDetail from "./pages/BlogDetail.tsx";
 import Contact from "./pages/Contact.tsx";
+import Search from "./pages/Search.tsx";
 import WhatsAppButton from "./components/WhatsAppButton.tsx";
 import BottomNav from "./components/BottomNav.tsx";
 import BackToTop from "./components/BackToTop.tsx";
