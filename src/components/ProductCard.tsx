@@ -21,11 +21,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart, toggleWishlist, isWishlisted } = useShop();
   const { user } = useAuth();
   const { toast } = useToast();
-  
+
   // Find current variant based on selected weight, if not found use first available
   const variant = product.variants.find(v => v.weight.toLowerCase() === selectedWeight.toLowerCase()) || product.variants[0];
-  
-  const discount = variant.originalPrice > variant.price 
+
+  const discount = variant.originalPrice > variant.price
     ? Math.round(((variant.originalPrice - variant.price) / variant.originalPrice) * 100)
     : 0;
 
@@ -54,7 +54,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg border border-slate-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col h-full relative animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col h-full relative animate-in fade-in slide-in-from-bottom-2 duration-500 ">
         {/* Image Area */}
         <div className="relative p-4 bg-white aspect-square flex items-center justify-center overflow-hidden">
           {discount > 0 && (
@@ -86,7 +86,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               <Eye className="w-4 h-4" />
             </button>
           </div>
-          
+
           <Link to={`/products/${product.id}`} className="w-full h-full relative flex items-center justify-center overflow-hidden">
             <img
               src={getImageUrl(product.image)}
@@ -112,7 +112,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {standardWeights.map((w) => {
               const isAvailable = product.variants.some(v => v.weight.toLowerCase() === w.toLowerCase());
               const isSelected = selectedWeight.toLowerCase() === w.toLowerCase();
-              
+
               return (
                 <button
                   key={w}
@@ -121,13 +121,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     e.preventDefault();
                     if (isAvailable) setSelectedWeight(w);
                   }}
-                  className={`w-10 h-6 flex items-center justify-center text-[9px] font-bold border rounded transition-all ${
-                    !isAvailable 
-                      ? "opacity-30 cursor-not-allowed border-slate-200 text-slate-400" 
-                      : isSelected
+                  className={`w-10 h-6 flex items-center justify-center text-[9px] font-bold border rounded transition-all ${!isAvailable
+                    ? "opacity-30 cursor-not-allowed border-slate-200 text-slate-400"
+                    : isSelected
                       ? "bg-[#be1e2d] text-white border-[#be1e2d]"
                       : "bg-white text-slate-600 border-slate-300 hover:border-[#be1e2d]"
-                  }`}
+                    }`}
                 >
                   {w.toUpperCase()}
                 </button>
@@ -136,13 +135,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
 
           <Link to={`/products/${product.id}`}>
-            <h3 className="font-display text-sm font-bold text-slate-800 mb-1 group-hover:text-[#be1e2d] transition-colors truncate">
+            <h3 className="font-display text-xl font-bold text-slate-800 mb-1 group-hover:text-[#be1e2d] transition-colors truncate">
               {product.name}
             </h3>
           </Link>
-          
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-[#be1e2d] text-lg font-black">
+
+          <div className="flex items-center gap-2">
+            <span className="text-[#be1e2d] text-md font-black">
               ₹ {variant.price.toFixed(2)}
             </span>
             {variant.originalPrice > variant.price && (
@@ -153,7 +152,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
 
           {/* Action Buttons Stacked (Mockup Style) */}
-          <div className="flex flex-col gap-2 mt-auto">
+          {/* <div className="flex flex-col gap-2 mt-auto">
             <button
               onClick={handleAddToCart}
               className="w-full h-10 bg-[#be1e2d] text-white font-black text-[10px] uppercase tracking-widest rounded transition-all hover:bg-[#a01926] shadow-md"
@@ -166,7 +165,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             >
               BUY NOW
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
