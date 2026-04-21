@@ -12,6 +12,7 @@ import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { listBlogs, type BlogPost } from "@/lib/blogs";
 import { getImageUrl } from "@/lib/utils";
 import ProductMarquee from "@/components/ProductMarquee";
+import MarketingBanner from "@/components/MarketingBanner";
 
 const Index = () => {
   const { products } = useShop();
@@ -81,50 +82,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Marketing Banner: Anokha Combination */}
-      <section className="relative py-32 overflow-hidden animate-in fade-in duration-1000">
-        <div className="absolute inset-0 bg-slate-900 rotate-[-1deg] scale-110" />
-        <div className="relative container flex flex-col md:flex-row items-center justify-between gap-16">
-          <div className="text-white max-w-2xl">
-            <div className="flex items-center gap-2 mb-8">
-              <Sparkles className="w-6 h-6 text-spice-gold animate-pulse" />
-              <span className="font-black uppercase tracking-[.4em] text-xs text-spice-gold">Premium Heritage Selection</span>
-            </div>
-            <h2 className="font-display text-5xl md:text-7xl font-black leading-tight mb-10">
-              Swad Aur Sehat Ka <br />
-              <span className="text-spice-gold italic">Anokha Combination</span>
-            </h2>
-            <p className="text-white/70 text-xl mb-12 leading-relaxed max-w-lg font-medium italic border-l-4 border-spice-gold pl-8">
-              "Experience the perfect harmony of taste and health with our farm-fresh, cold-ground spices that preserve essential oils and natural goodness."
-            </p>
-            <div className="flex flex-wrap gap-6">
-              <Link 
-                to="/products"
-                className="inline-flex h-16 items-center px-10 bg-[#be1e2d] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#a01926] transition-all hover:-translate-y-1 shadow-2xl shadow-red-900/40"
-              >
-                Shop the Range
-              </Link>
-              <Link 
-                to="/about"
-                className="inline-flex h-16 items-center px-10 bg-white/10 backdrop-blur-md text-white border border-white/20 font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-white/20 transition-all"
-              >
-                Our Story
-              </Link>
-            </div>
-          </div>
-          
-          <div className="relative w-full max-w-lg aspect-square group">
-             <div className="absolute inset-0 bg-spice-gold/20 rounded-[4rem] blur-3xl group-hover:bg-spice-gold/40 transition-all duration-700" />
-             <div className="relative w-full h-full bg-white/5 rounded-[4rem] backdrop-blur-xl p-12 border border-white/10 flex items-center justify-center overflow-hidden">
-                <div className="w-full h-full bg-slate-800/50 rounded-[3rem] flex flex-col items-center justify-center text-white/30 italic text-center p-12 border border-white/5 group-hover:scale-105 transition-transform duration-700">
-                    <Sparkles className="w-12 h-12 mb-6 opacity-20" />
-                    <p className="font-display text-2xl font-bold mb-4 opacity-40">Authentic Spice Pack</p>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Coming Soon to your Kitchen</span>
-                </div>
-             </div>
-          </div>
-        </div>
-      </section>
+      <MarketingBanner />
 
       <AboutSection />
 

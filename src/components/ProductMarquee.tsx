@@ -1,13 +1,28 @@
 import { useShop } from "@/context/ShopContext";
 import ProductCard from "./ProductCard";
+import useEmblaCarousel from "embla-carousel-react";
+import AutoScroll from "embla-carousel-auto-scroll";
 
 const ProductMarquee = () => {
   const { products, loadingProducts } = useShop();
+  
+  const [emblaRef] = useEmblaCarousel(
+    { 
+      loop: true, 
+      dragFree: true,
+      align: "start"
+    }, 
+    [
+      AutoScroll({ 
+        playOnInit: true, 
+        speed: 1,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true
+      })
+    ]
+  );
 
   if (loadingProducts) return null;
-
-  // Duplicate products to create a seamless loop
-  const displayProducts = [...products, ...products, ...products];
 
   return (
     <div className="w-full bg-background py-16 overflow-hidden">
@@ -18,28 +33,21 @@ const ProductMarquee = () => {
         </div>
       </div>
       
-      <div className="relative flex overflow-hidden">
-        <div className="animate-marquee flex gap-8 whitespace-nowrap py-10 px-4">
-          {displayProducts.map((product, idx) => (
-            <div key={`${product.id}-${idx}`} className="w-[300px] inline-block shrink-0">
+      <div className="relative overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+        <div className="flex gap-8 py-10 px-4">
+          {products.map((product, idx) => (
+            <div key={`${product.id}-${idx}`} className="flex-[0_0_300px] min-w-0">
+              <ProductCard product={product} />
+            </div>
+          ))}
+          {/* Duplicate some products to ensure smoothness if the list is short */}
+          {products.length < 10 && products.map((product, idx) => (
+            <div key={`${product.id}-dup-${idx}`} className="flex-[0_0_300px] min-w-0">
               <ProductCard product={product} />
             </div>
           ))}
         </div>
       </div>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-33.333%); }
-        }
-        .animate-marquee {
-          animation: marquee 40s linear infinite;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
-        }
-      `}} />
     </div>
   );
 };
