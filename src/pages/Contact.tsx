@@ -51,7 +51,7 @@ const Contact = () => {
           {/* Decorative background spice patterns info */}
           <div className="absolute -top-10 -right-10 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
           <div className="absolute top-20 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
-          
+
           <div className="max-w-3xl relative z-10">
             <span className="inline-block bg-white/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-6 animate-in fade-in slide-in-from-bottom-2">
               Contact Us
@@ -73,7 +73,7 @@ const Contact = () => {
           <div className="bg-white rounded-[3rem] p-8 md:p-16 shadow-[0_20px_50px_rgba(190,30,45,0.1)] border border-slate-100 overflow-hidden relative">
             {/* Corner Decor */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#be1e2d]/5 rounded-bl-[5rem]" />
-            
+
             <div className="flex items-center gap-4 mb-12">
               <div className="w-14 h-14 bg-[#be1e2d] rounded-2xl flex items-center justify-center shadow-lg shadow-red-100">
                 <MessageSquare className="w-7 h-7 text-white" />
@@ -149,29 +149,29 @@ const Contact = () => {
 
             {/* Map Section Integrated into Form Card */}
             <div className="mt-16 pt-16 border-t border-slate-100">
-               <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 bg-[#facc15] rounded-xl flex items-center justify-center shadow-lg">
-                    <MapPin className="w-6 h-6 text-[#78350f]" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-2xl font-bold text-slate-800">Visit Our Store</h3>
-                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-0.5">Physical Presence in Gujarat</p>
-                  </div>
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 bg-[#facc15] rounded-xl flex items-center justify-center shadow-lg">
+                  <MapPin className="w-6 h-6 text-[#78350f]" />
                 </div>
-               
-               <div className="w-full h-[400px] rounded-[2rem] overflow-hidden border border-slate-100 shadow-inner group">
-                  <iframe 
-                    title="Vishal Masala Location"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.6979644026856!2d72.50239!3d23.03!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e848aba5bd449%3A0x4fccd761ecbb5234!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1713444444444!5m2!1sen!2sin" 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen={true}
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="grayscale group-hover:grayscale-0 transition-all duration-700"
-                  />
-               </div>
+                <div>
+                  <h3 className="font-display text-2xl font-bold text-slate-800">Visit Our Store</h3>
+                  <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-0.5">Physical Presence in Gujarat</p>
+                </div>
+              </div>
+
+              <div className="w-full h-[400px] rounded-[2rem] overflow-hidden border border-slate-100 shadow-inner group">
+                <iframe
+                  title="Vishal Masala Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.546250541326!2d71.8237843!3d21.525486!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be207e0178e9d15%3A0xbb4faf5932617f04!2sVishal%20Store%20And%20Masala!5e0!3m2!1sen!2sin!4v1776778302113!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="grayscale group-hover:grayscale-0 transition-all duration-700"
+                />
+              </div>
             </div>
           </div>
 
@@ -180,7 +180,7 @@ const Contact = () => {
             <div className="bg-[#be1e2d] p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl translate-x-10 -translate-y-10" />
               <h3 className="font-display text-2xl font-black mb-10 relative z-10">Fast Connect</h3>
-              
+
               <div className="space-y-8 relative z-10">
                 <a href="tel:+919375425771" className="flex items-center gap-5 group/item bg-white/10 p-4 rounded-3xl hover:bg-white/20 transition-all">
                   <div className="w-12 h-12 bg-white text-[#be1e2d] rounded-2xl flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform">
@@ -191,7 +191,7 @@ const Contact = () => {
                     <p className="font-bold text-lg">+91 93754 25771</p>
                   </div>
                 </a>
-                
+
                 <a href="mailto:aaryan.b.rathod99@gmail.com" className="flex items-center gap-5 group/item bg-white/10 p-4 rounded-3xl hover:bg-white/20 transition-all">
                   <div className="w-12 h-12 bg-white text-[#be1e2d] rounded-2xl flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform">
                     <Mail className="w-5 h-5" />
@@ -216,21 +216,21 @@ const Contact = () => {
               <div className="mt-12 pt-10 border-t border-white/10 text-center">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-2">Social Trust</p>
                 <div className="flex justify-center gap-4">
-                   <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-white/20 transition-all cursor-pointer" />
-                   <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-white/20 transition-all cursor-pointer" />
-                   <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-white/20 transition-all cursor-pointer" />
+                  <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-white/20 transition-all cursor-pointer" />
+                  <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-white/20 transition-all cursor-pointer" />
+                  <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-white/20 transition-all cursor-pointer" />
                 </div>
               </div>
             </div>
 
             {/* Wholesale/Bulk Query Branding */}
             <div className="bg-slate-900 p-8 rounded-[3rem] border-4 border-spice-gold shadow-2xl text-center flex flex-col items-center">
-               <IndianRupee className="w-10 h-10 text-spice-gold mb-4" />
-               <h4 className="font-display text-xl font-black text-white mb-2">Wholesale Inquiries</h4>
-               <p className="text-white/60 text-sm mb-6 font-medium">For hotel, restaurant or exports orders.</p>
-               <a href="https://wa.me/919375425771?text=Wholesale%20Inquiry%20for%20Vishal%20Masala" className="w-full h-14 bg-spice-gold text-slate-900 rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white transition-all shadow-xl">
-                  Message Wholesale Team
-               </a>
+              <IndianRupee className="w-10 h-10 text-spice-gold mb-4" />
+              <h4 className="font-display text-xl font-black text-white mb-2">Wholesale Inquiries</h4>
+              <p className="text-white/60 text-sm mb-6 font-medium">For hotel, restaurant or exports orders.</p>
+              <a href="https://wa.me/919375425771?text=Wholesale%20Inquiry%20for%20Vishal%20Masala" className="w-full h-14 bg-spice-gold text-slate-900 rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white transition-all shadow-xl">
+                Message Wholesale Team
+              </a>
             </div>
           </div>
         </div>
